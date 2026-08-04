@@ -1,6 +1,6 @@
 /* ============================================================
    «Синтаксис» — издательство современной русской литературы
-   Токены, база, обложки, витрина, журнал, подвал
+   Токены, база, мозаика (этажи и блоки), обложки, подвал
    ============================================================ */
 
 :root {
@@ -51,9 +51,7 @@ a:focus-visible {
   padding-inline: clamp(20px, 4.5vw, 72px);
 }
 
-section[id] { scroll-margin-top: 88px; }
-
-.section { padding-block: clamp(56px, 8vw, 120px); }
+[id] { scroll-margin-top: 88px; }
 
 /* --- мелкая типографика ------------------------------------ */
 
@@ -80,6 +78,14 @@ section[id] { scroll-margin-top: 88px; }
 }
 
 .meta { font-size: 13px; color: var(--ink-soft); }
+
+.dek {
+  font-size: clamp(.95rem, 1.05vw, 1.125rem);
+  font-size: clamp(.95rem, 1.3cqi, 1.125rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
 
 .arr { display: inline-block; transition: transform .25s ease; }
 
@@ -113,9 +119,12 @@ section[id] { scroll-margin-top: 88px; }
 
 .site-header__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
+  column-gap: 24px;
+  row-gap: 4px;
+  padding-block: 15px;
 }
 
 .wordmark {
@@ -130,7 +139,8 @@ section[id] { scroll-margin-top: 88px; }
 
 .site-nav {
   display: flex;
-  gap: clamp(18px, 2.5vw, 36px);
+  flex-wrap: wrap;
+  gap: 4px clamp(16px, 2.5vw, 36px);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: .02em;
@@ -139,61 +149,193 @@ section[id] { scroll-margin-top: 88px; }
 .site-nav a { padding-block: 8px; transition: color .2s; }
 .site-nav a:hover { color: var(--accent); }
 
-/* --- герой -------------------------------------------------- */
+/* --- мозаика: этажи и блоки ---------------------------------
+   Главная — вертикальный стопкой набор «этажей», этаж — ряд
+   «блоков» (книга, заметка, манифест…). Все линии мозаики —
+   это фон .mosaic, просвечивающий сквозь 1px-зазоры между
+   белыми блоками: границы блока всегда видны и всегда 1px. */
 
-.hero { padding-block: clamp(44px, 7vh, 90px) clamp(56px, 9vh, 110px); }
-
-.hero__grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: clamp(24px, 3vw, 48px);
-  align-items: center;
+.mosaic {
+  margin-block: clamp(24px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--rule);
+  background: var(--rule);
 }
 
-.hero__text { grid-column: 1 / 8; }
+/* Этаж: сколько блоков встанет в ряд, задаёт базис (--basis);
+   не влезли — переносятся и растягиваются на всю ширину.
+   Никаких медиазапросов: перенос и есть адаптив. */
+.floor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+}
 
-.hero__author {
-  margin-top: 30px;
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
+.floor--2 { --basis: 460px; }
+.floor--3 { --basis: 320px; }
+.floor--4 { --basis: 250px; }
+
+.block {
+  background: var(--paper);
+  flex: 1 1 var(--basis, 100%);
+  min-width: 0;
+  padding: clamp(18px, 2.6vw, 40px);
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+}
+
+.floor--1 > .block { padding: clamp(24px, 4vw, 64px); }
+
+/* --- блок книги --------------------------------------------- */
+
+.book {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vw, 28px);
+}
+
+.book__coverlink {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+}
+
+.book__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* Широкий блок (этаж из одного-двух, растянутый «хвост» ряда):
+   книга ложится горизонтально — текст слева, обложка справа.
+   Порог — ширина самого блока, а не вьюпорта. */
+@container (min-width: 520px) {
+  .book {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 34cqi, 470px);
+    gap: clamp(24px, 3vw, 56px);
+    gap: clamp(24px, 4.5cqi, 60px);
+  }
+
+  .book__coverlink {
+    order: 2;
+    align-self: center;
+    justify-self: end;
+  }
+
+  /* в горизонтальном блоке текст собирается по центру напротив
+     обложки, покупка идёт сразу за ним, а не по нижней кромке */
+  .book__body { justify-content: center; }
+  .book__body .buy { margin-top: 0; padding-top: 28px; }
+}
+
+.book__author {
+  margin-top: 16px;
+  font-size: clamp(.78rem, .95vw, 1.1rem);
+  font-size: clamp(.78rem, 2.3cqi, 1.1rem);
   font-weight: 600;
-  letter-spacing: .14em;
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 
-.hero__title {
-  margin-top: 10px;
-  font-size: clamp(3.2rem, 9vw, 8.6rem);
-  font-weight: 640;
-  line-height: .95;
-  letter-spacing: -.025em;
+.book__title {
+  margin-top: 8px;
+  font-size: clamp(1.6rem, 3.2vw, 3rem);
+  font-size: clamp(1.6rem, 8.2cqi, 6.6rem);
+  font-weight: 620;
+  line-height: .98;
+  letter-spacing: -.02em;
 }
 
-.hero__title a { transition: color .25s; }
-.hero__title a:hover { color: var(--accent); }
+.book__title a,
+.note__title a { transition: color .25s; }
 
-.hero__dek {
-  margin-top: 26px;
-  max-width: 46ch;
-  font-size: clamp(1rem, 1.15vw, 1.125rem);
-  line-height: 1.65;
-  color: var(--ink-soft);
-}
+.book__title a:hover,
+.note__title a:hover { color: var(--accent); }
 
-.hero__actions {
-  margin-top: 38px;
+.book__body .dek { margin-top: 14px; }
+
+/* --- покупка ------------------------------------------------ */
+
+.buy {
+  margin-top: auto;
+  padding-top: 22px;
   display: flex;
-  align-items: center;
-  gap: 28px;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
 }
 
-.hero__note { font-size: 13.5px; color: var(--ink-soft); }
+.buy__price {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  margin-right: 6px;
+}
 
-.hero__coverlink {
-  grid-column: 9 / 13;
-  width: 100%;
-  max-width: 500px;
-  justify-self: end;
+.buy__link {
+  border: 1px solid rgba(22, 19, 14, .28);
+  border-radius: 3px;
+  padding: .5em .85em;
+  font-size: 12.5px;
+  font-weight: 550;
+  letter-spacing: .02em;
+  line-height: 1;
+  transition: color .2s, border-color .2s;
+}
+
+.buy__link:hover { color: var(--accent); border-color: rgba(224, 54, 26, .55); }
+
+/* --- блок заметки (материал журнала) ------------------------ */
+
+/* Заметка без обложки в ряду с высокими книжными блоками ведёт
+   себя как цитата: весь кластер по вертикальному центру. */
+.block--note { justify-content: center; }
+
+.note__title {
+  margin-top: 14px;
+  font-size: clamp(1.3rem, 2.4vw, 2.5rem);
+  font-size: clamp(1.3rem, 7cqi, 3.4rem);
+  font-weight: 590;
+  line-height: 1.12;
+  letter-spacing: -.015em;
+}
+
+.note__title + .dek { margin-top: 14px; }
+
+.block--note .meta { padding-top: 22px; }
+
+/* --- блок «об издательстве» --------------------------------- */
+
+.about__quote {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 3.3rem);
+  font-size: clamp(1.6rem, 4cqi, 3.3rem);
+  font-weight: 480;
+  line-height: 1.18;
+  letter-spacing: -.01em;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+.about__sub {
+  margin-top: 22px;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.block--about .text-btn {
+  margin-top: 28px;
+  align-self: flex-start;
 }
 
 /* --- обложки (чистый CSS, типографика в cqi) ---------------- */
@@ -222,10 +364,9 @@ section[id] { scroll-margin-top: 88px; }
   pointer-events: none;
 }
 
-.book-card:hover .cover,
-.hero__coverlink:hover .cover {
-  transform: translateY(-8px);
-  box-shadow: 0 34px 60px -38px rgba(22, 19, 14, .5);
+.book__coverlink:hover .cover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 44px -30px rgba(22, 19, 14, .45);
 }
 
 .cover__top {
@@ -334,17 +475,23 @@ section[id] { scroll-margin-top: 88px; }
 /* «Севернее сна» — индиго, корешковая вертикаль */
 .cover--sever { background: #24407E; color: #EFE8D8; }
 
+/* только cqb: у vertical-rl текста inline-ось вертикальна, поэтому
+   cqi здесь мерил бы высоту, которую обложка не контейнирует,
+   и падал бы на вьюпорт; cqb для него — это ширина обложки */
 .cover--sever .cover__vert {
   position: absolute;
-  left: 7cqi;
-  top: 7cqi;
-  bottom: 7cqi;
+  left: 14px;
+  top: 14px;
+  bottom: 14px;
+  left: 7cqb;
+  top: 7cqb;
+  bottom: 7cqb;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: var(--serif);
   font-weight: 730;
-  font-size: 24px;
-  font-size: 8.4cqi;
+  font-size: 30px;
+  font-size: 17.5cqb;
   line-height: 1.1;
   letter-spacing: .02em;
   white-space: nowrap;
@@ -402,288 +549,67 @@ section[id] { scroll-margin-top: 88px; }
   line-height: 1;
 }
 
-/* --- шапки секций ------------------------------------------- */
-
-.section__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 24px;
-  border-top: 1px solid var(--ink);
-  padding-top: 22px;
-  margin-bottom: clamp(36px, 5vw, 64px);
-}
-
-.section__title {
-  font-size: clamp(2.1rem, 3.8vw, 3.4rem);
-  letter-spacing: -.015em;
-}
-
-.section__title sup {
-  font-family: var(--sans);
-  font-size: .32em;
-  font-weight: 600;
-  letter-spacing: .08em;
-  color: var(--accent);
-  margin-left: .35em;
-}
-
-.section__more {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: color .2s;
-}
-
-.section__more:hover { color: var(--accent); }
-.section__more:hover .arr { transform: translateX(4px); }
-
-.section__note { font-size: 13px; color: var(--ink-soft); white-space: nowrap; }
-
-/* --- витрина книг ------------------------------------------- */
-
-.books-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: clamp(24px, 2.8vw, 44px);
-  row-gap: clamp(48px, 5vw, 96px);
-}
-
-.place-a { grid-column: 1 / 6;  grid-row: 1; }
-.place-b { grid-column: 8 / 13; grid-row: 1; margin-top: clamp(64px, 9vw, 150px); }
-.place-c { grid-column: 2 / 6;  grid-row: 2; }
-.place-d { grid-column: 7 / 13; grid-row: 2; margin-top: clamp(48px, 6vw, 96px); }
-.place-e { grid-column: 1 / 6;  grid-row: 3; }
-
-.book-card { display: block; }
-
-.book-card__meta {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.book-card__author {
-  font-size: clamp(.95rem, 1.1vw, 1.1rem);
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.book-card__title {
-  font-size: clamp(1.7rem, 2.4vw, 2.7rem);
-  font-weight: 580;
-  line-height: 1.02;
-  letter-spacing: -.015em;
-}
-
-.book-card:hover .book-card__title {
-  text-decoration: underline;
-  text-decoration-thickness: .045em;
-  text-underline-offset: .08em;
-}
-
-.books-cta {
-  grid-column: 7 / 13;
-  grid-row: 3;
-  align-self: center;
-  font-family: var(--serif);
-  font-size: clamp(1.8rem, 2.8vw, 2.9rem);
-  font-weight: 560;
-  line-height: 1.15;
-  letter-spacing: -.01em;
-  max-width: 14em;
-  transition: color .25s;
-}
-
-.books-cta:hover { color: var(--accent); }
-.books-cta:hover .arr { transform: translateX(8px); }
-
-/* --- об издательстве ---------------------------------------- */
-
-.about__inner { border-top: 1px solid var(--ink); padding-top: 22px; }
-
-.about__quote {
-  margin-top: 36px;
-  font-family: var(--serif);
-  font-size: clamp(1.75rem, 3.6vw, 3.3rem);
-  font-weight: 480;
-  line-height: 1.18;
-  letter-spacing: -.01em;
-  max-width: 30ch;
-  text-wrap: balance;
-}
-
-.about__sub {
-  margin-top: 28px;
-  max-width: 52ch;
-  color: var(--ink-soft);
-  line-height: 1.7;
-}
-
-.about__inner .text-btn { margin-top: 30px; }
-
-/* --- журнал ------------------------------------------------- */
-
-.journal-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: clamp(32px, 3.5vw, 56px);
-}
-
-.journal-feature { grid-column: 1 / 8; display: block; }
-
-.journal-feature__title {
-  margin-top: 22px;
-  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
-  font-weight: 580;
-  line-height: 1.08;
-  letter-spacing: -.015em;
-}
-
-.journal-feature__dek {
-  margin-top: 18px;
-  max-width: 44ch;
-  font-size: 1.02rem;
-  line-height: 1.6;
-  color: var(--ink-soft);
-}
-
-.journal-feature .meta { margin-top: 24px; }
-
-.journal-feature:hover .journal-feature__title,
-.journal-item:hover h4 {
-  text-decoration: underline;
-  text-decoration-thickness: .05em;
-  text-underline-offset: .08em;
-}
-
-.journal-side { grid-column: 9 / 13; }
-
-.journal-item {
-  display: block;
-  padding: 22px 0;
-  border-top: 1px solid var(--rule);
-}
-
-.journal-item:first-child { padding-top: 0; border-top: 0; }
-
-.journal-item h4 {
-  margin-top: 12px;
-  font-size: clamp(1.25rem, 1.7vw, 1.55rem);
-  font-weight: 570;
-  line-height: 1.22;
-  letter-spacing: -.01em;
-}
-
-.journal-item .meta { margin-top: 10px; }
-
-/* --- готовим к печати --------------------------------------- */
-
-.soon-list { border-bottom: 1px solid var(--rule); }
-
-.soon-row {
-  display: grid;
-  grid-template-columns: 110px 230px 1fr auto;
-  gap: 24px;
-  align-items: baseline;
-  padding: 24px 0;
-  border-top: 1px solid var(--rule);
-}
-
-.soon-row__when { font-size: 13px; color: var(--ink-soft); }
-
-.soon-row__author {
-  font-size: 13.5px;
-  font-weight: 600;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-}
-
-.soon-row__title {
-  font-family: var(--serif);
-  font-size: clamp(1.3rem, 1.9vw, 1.75rem);
-  font-weight: 570;
-  line-height: 1.15;
-  letter-spacing: -.01em;
-  transition: color .2s;
-}
-
-.soon-row__genre { font-size: 13px; color: var(--ink-soft); justify-self: end; }
-
-.soon-row:hover .soon-row__title { color: var(--accent); }
-
 /* --- подвал ------------------------------------------------- */
 
 .site-footer {
   background: var(--ink);
   color: #F1EDE4;
-  padding: clamp(56px, 8vw, 96px) 0 36px;
+  padding: clamp(32px, 4.5vw, 52px) 0 20px;
+}
+
+.site-footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
 }
 
 .site-footer__mark {
   font-family: var(--serif);
   font-weight: 680;
-  font-size: clamp(3.2rem, 9vw, 8rem);
-  line-height: .9;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: .95;
   letter-spacing: -.02em;
 }
 
-.site-footer__tag {
-  margin-top: 16px;
-  font-size: 15px;
-  color: rgba(241, 237, 228, .55);
-}
+.site-footer__tag { font-size: 14px; color: rgba(241, 237, 228, .55); }
 
-.site-footer__cols {
-  margin-top: clamp(40px, 6vw, 72px);
-  padding-top: 32px;
+.site-footer__row {
+  margin-top: clamp(20px, 3vw, 30px);
+  padding-top: 20px;
   border-top: 1px solid rgba(241, 237, 228, .18);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px clamp(24px, 3.5vw, 56px);
 }
 
-.site-footer__h {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: rgba(241, 237, 228, .5);
-  margin-bottom: 16px;
-}
+.site-footer__nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 
-.site-footer__nav { display: flex; flex-direction: column; gap: 10px; }
+.site-footer__nav a,
+.site-footer__mail { font-size: 14.5px; transition: color .2s; }
 
-.site-footer__nav a {
-  font-size: 15.5px;
-  width: fit-content;
-  transition: color .2s;
-}
-
-.site-footer__nav a:hover { color: var(--accent-warm); }
+.site-footer__nav a:hover,
+.site-footer__mail:hover { color: var(--accent-warm); }
 
 .site-footer__nav .ext { font-size: .8em; opacity: .6; }
 
 .site-footer__note {
-  margin-top: 18px;
-  max-width: 30ch;
+  margin-top: 14px;
+  max-width: 60ch;
   font-size: 13px;
   line-height: 1.6;
   color: rgba(241, 237, 228, .5);
 }
 
 .site-footer__base {
-  margin-top: clamp(48px, 7vw, 80px);
-  padding-top: 24px;
+  margin-top: clamp(20px, 3vw, 30px);
+  padding-top: 16px;
   border-top: 1px solid rgba(241, 237, 228, .18);
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px 16px;
   font-size: 13px;
   color: rgba(241, 237, 228, .5);
 }
@@ -691,61 +617,7 @@ section[id] { scroll-margin-top: 88px; }
 .site-footer__base a { transition: color .2s; }
 .site-footer__base a:hover { color: #F1EDE4; }
 
-/* --- адаптив ------------------------------------------------ */
-
-@media (max-width: 1100px) {
-  .books-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-  .place-a, .place-b, .place-c, .place-d, .place-e {
-    grid-column: auto;
-    grid-row: auto;
-    margin-top: 0;
-  }
-
-  .book-card:nth-child(even) { margin-top: 56px; }
-
-  .books-cta { grid-column: 1 / -1; grid-row: auto; padding: 16px 0; }
-}
-
-@media (max-width: 880px) {
-  .hero__grid { grid-template-columns: 1fr; }
-  .hero__text { grid-column: auto; }
-
-  .hero__coverlink {
-    grid-column: auto;
-    justify-self: start;
-    max-width: 400px;
-    margin-top: 48px;
-  }
-
-  .journal-grid { grid-template-columns: 1fr; }
-  .journal-feature, .journal-side { grid-column: auto; }
-
-  .journal-side .journal-item:first-child {
-    border-top: 1px solid var(--rule);
-    padding-top: 22px;
-  }
-}
-
-@media (max-width: 760px) {
-  .soon-row { display: block; }
-  .soon-row__when { display: block; margin-bottom: 8px; }
-  .soon-row__author { display: block; margin-bottom: 6px; }
-  .soon-row__title { display: block; }
-  .soon-row__genre { display: block; margin-top: 8px; }
-
-  .site-footer__cols { grid-template-columns: 1fr; gap: 36px; }
-}
-
-@media (max-width: 620px) {
-  .books-grid { grid-template-columns: 1fr; }
-  .book-card:nth-child(even) { margin-top: 0; }
-
-  .site-nav { gap: 16px; font-size: 13px; }
-  .nav-stub { display: none; }
-
-  .site-footer__base { flex-direction: column; align-items: flex-start; gap: 12px; }
-}
+/* --- движение ----------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

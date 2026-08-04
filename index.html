@@ -20,231 +20,245 @@
   <div class="wrap site-header__row">
     <a class="wordmark" href="#top">синтаксис<span class="wordmark__mark">;</span></a>
     <nav class="site-nav" aria-label="Основные разделы">
-      <a href="#books">Книги</a>
-      <a href="#journal">Журнал</a>
-      <a href="#" class="nav-stub" title="Раздел готовится">Авторы</a>
+      <a href="#" title="Раздел готовится">Книги</a>
+      <a href="#" title="Раздел готовится">Журнал</a>
+      <a href="#" title="Раздел готовится">Авторы</a>
       <a href="#about">О нас</a>
     </nav>
   </div>
 </header>
 
-<main>
+<main class="wrap">
+  <div class="mosaic">
 
-  <!-- Герой: главная новинка -->
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div class="hero__text">
-        <p class="chip chip--accent">Новинка · август 2026</p>
-        <p class="hero__author">Вера Ланская</p>
-        <h1 class="hero__title"><a href="#">Хор одиночек</a></h1>
-        <p class="hero__dek">Роман о доме на окраине, где сорок квартир молчат по-разному, — пока одна общая нота не превращает это молчание в голос.</p>
-        <div class="hero__actions">
-          <a class="text-btn" href="#">О книге <span class="arr">→</span></a>
-          <span class="hero__note">Бумажная и электронная — в продаже с 20 августа</span>
-        </div>
-      </div>
-      <a class="hero__coverlink" href="#" aria-label="«Хор одиночек» — страница книги">
-        <div class="cover cover--hor">
-          <p class="cover__top">Вера Ланская</p>
-          <p class="cover__display"><span class="l1">Хор</span><span class="l2">одиночек</span></p>
-          <p class="cover__bottom"><em>роман</em><span class="cover__logo">синтаксис;</span></p>
-        </div>
-      </a>
-    </div>
-  </section>
+    <!-- Этаж 1: новинка -->
+    <div class="floor floor--1">
 
-  <!-- 01 · Книги -->
-  <section class="section" id="books">
-    <div class="wrap">
-      <div class="section__head">
-        <h2 class="section__title">Книги <sup>01</sup></h2>
-        <a class="section__more" href="#">Все книги <span class="arr">→</span></a>
-      </div>
-
-      <div class="books-grid">
-
-        <a class="book-card place-a" href="#">
-          <div class="cover cover--light cover--vnutr">
-            <p class="cover__top">Марианна Верейская</p>
-            <p class="cover__display">внутренняя<br>речь</p>
-            <p class="cover__bottom"><span>стихи</span><span class="cover__logo">синтаксис;</span></p>
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Хор одиночек» — страница книги">
+            <div class="cover cover--hor">
+              <p class="cover__top">Вера Ланская</p>
+              <p class="cover__display"><span class="l1">Хор</span><span class="l2">одиночек</span></p>
+              <p class="cover__bottom"><em>роман</em><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
+            <p class="chip chip--accent">Новинка · август 2026</p>
+            <p class="book__author">Вера Ланская</p>
+            <h1 class="book__title"><a href="#">Хор одиночек</a></h1>
+            <p class="dek">Роман о доме на окраине, где сорок квартир молчат по-разному, — пока одна общая нота не превращает это молчание в голос.</p>
+            <div class="buy">
+              <span class="buy__price">780 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+              <a class="buy__link" href="#">Электронная</a>
+            </div>
           </div>
-          <div class="book-card__meta">
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Этаж 2: стихи · интервью · автофикшн -->
+    <div class="floor floor--3">
+
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Внутренняя речь» — страница книги">
+            <div class="cover cover--light cover--vnutr">
+              <p class="cover__top">Марианна Верейская</p>
+              <p class="cover__display">внутренняя<br>речь</p>
+              <p class="cover__bottom"><span>стихи</span><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
             <p class="chip">Стихи · 2026</p>
-            <p class="book-card__author">Марианна Верейская</p>
-            <h3 class="book-card__title">Внутренняя речь</h3>
+            <p class="book__author">Марианна Верейская</p>
+            <h2 class="book__title"><a href="#">Внутренняя речь</a></h2>
+            <div class="buy">
+              <span class="buy__price">540 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+            </div>
           </div>
-        </a>
+        </div>
+      </article>
 
-        <a class="book-card place-b" href="#">
-          <div class="cover cover--nichey">
-            <p class="cover__top">Саша Штерн</p>
-            <p class="cover__display">ничей<br>дневник<span class="accent">;</span></p>
-            <p class="cover__bottom"><span>автофикшн</span><span class="cover__logo">синтаксис;</span></p>
-          </div>
-          <div class="book-card__meta">
+      <article class="block block--note">
+        <p class="rubric">Интервью</p>
+        <h2 class="note__title"><a href="#">Марианна Верейская: «Стихи начинаются там, где заканчивается замысел»</a></h2>
+        <p class="dek">Разговор о сборнике «Внутренняя речь», привычке записывать сны и том, зачем поэту молчание.</p>
+        <p class="meta">21 июля 2026</p>
+      </article>
+
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Ничей дневник» — страница книги">
+            <div class="cover cover--nichey">
+              <p class="cover__top">Саша Штерн</p>
+              <p class="cover__display">ничей<br>дневник<span class="accent">;</span></p>
+              <p class="cover__bottom"><span>автофикшн</span><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
             <p class="chip">Автофикшн · 2026</p>
-            <p class="book-card__author">Саша Штерн</p>
-            <h3 class="book-card__title">Ничей дневник</h3>
+            <p class="book__author">Саша Штерн</p>
+            <h2 class="book__title"><a href="#">Ничей дневник</a></h2>
+            <div class="buy">
+              <span class="buy__price">620 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+            </div>
           </div>
-        </a>
+        </div>
+      </article>
 
-        <a class="book-card place-c" href="#">
-          <div class="cover cover--sever">
-            <p class="cover__vert">Севернее сна</p>
-            <p class="cover__top">Артём Белозёров</p>
-            <p class="cover__bottom"><span>рассказы</span><span class="cover__logo">синтаксис;</span></p>
-          </div>
-          <div class="book-card__meta">
-            <p class="chip">Рассказы · 2025</p>
-            <p class="book-card__author">Артём Белозёров</p>
-            <h3 class="book-card__title">Севернее сна</h3>
-          </div>
-        </a>
-
-        <a class="book-card place-d" href="#">
-          <div class="cover cover--tishe">
-            <p class="cover__top">Павел Гронский</p>
-            <p class="cover__initial">Т</p>
-            <p class="cover__display">Тише воды</p>
-            <p class="cover__bottom"><em>повесть</em><span class="cover__logo">синтаксис;</span></p>
-          </div>
-          <div class="book-card__meta">
-            <p class="chip">Повесть · 2025</p>
-            <p class="book-card__author">Павел Гронский</p>
-            <h3 class="book-card__title">Тише воды</h3>
-          </div>
-        </a>
-
-        <a class="book-card place-e" href="#">
-          <div class="cover cover--light cover--slovar">
-            <p class="cover__top">Ольга Реутова</p>
-            <p class="cover__display"><span class="w1">словарь</span><span class="w2">утраченных</span><span class="w3">мест</span></p>
-            <p class="cover__bottom"><span>проза · 416 с.</span><span class="cover__logo">синтаксис;</span></p>
-          </div>
-          <div class="book-card__meta">
-            <p class="chip">Проза · 2025</p>
-            <p class="book-card__author">Ольга Реутова</p>
-            <h3 class="book-card__title">Словарь утраченных мест</h3>
-          </div>
-        </a>
-
-        <a class="books-cta" href="#">Смотреть весь каталог — двенадцать книг <span class="arr">→</span></a>
-
-      </div>
     </div>
-  </section>
 
-  <!-- Об издательстве -->
-  <section class="section about" id="about">
-    <div class="wrap">
-      <div class="about__inner">
+    <!-- Этаж 3: эссе · рассказы -->
+    <div class="floor floor--2">
+
+      <article class="block block--note">
+        <p class="rubric">Эссе</p>
+        <h2 class="note__title"><a href="#">Медленное чтение как сопротивление</a></h2>
+        <p class="dek">Зачем в эпоху бесконечной ленты нужны книги, которые требуют времени, — объясняет главный редактор «Синтаксиса».</p>
+        <p class="meta">28 июля 2026 · 12 минут</p>
+      </article>
+
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Севернее сна» — страница книги">
+            <div class="cover cover--sever">
+              <p class="cover__vert">Севернее сна</p>
+              <p class="cover__top">Артём Белозёров</p>
+              <p class="cover__bottom"><span>рассказы</span><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
+            <p class="chip">Рассказы · 2025</p>
+            <p class="book__author">Артём Белозёров</p>
+            <h2 class="book__title"><a href="#">Севернее сна</a></h2>
+            <p class="dek">Одиннадцать историй о людях, которые уехали за полярный круг, чтобы научиться спать без света.</p>
+            <div class="buy">
+              <span class="buy__price">640 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Этаж 4: повесть · рецензия · проза · хроника -->
+    <div class="floor floor--4">
+
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Тише воды» — страница книги">
+            <div class="cover cover--tishe">
+              <p class="cover__top">Павел Гронский</p>
+              <p class="cover__initial">Т</p>
+              <p class="cover__display">Тише воды</p>
+              <p class="cover__bottom"><em>повесть</em><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
+            <p class="chip">Повесть · 2025</p>
+            <p class="book__author">Павел Гронский</p>
+            <h2 class="book__title"><a href="#">Тише воды</a></h2>
+            <div class="buy">
+              <span class="buy__price">520 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="block block--note">
+        <p class="rubric">Рецензия</p>
+        <h2 class="note__title"><a href="#">«Хор одиночек»: сорок голосов и одна нота</a></h2>
+        <p class="dek">Как устроен роман Веры Ланской — и почему его финал слышно, а не видно.</p>
+        <p class="meta">1 августа 2026</p>
+      </article>
+
+      <article class="block block--book">
+        <div class="book">
+          <a class="book__coverlink" href="#" aria-label="«Словарь утраченных мест» — страница книги">
+            <div class="cover cover--light cover--slovar">
+              <p class="cover__top">Ольга Реутова</p>
+              <p class="cover__display"><span class="w1">словарь</span><span class="w2">утраченных</span><span class="w3">мест</span></p>
+              <p class="cover__bottom"><span>проза · 416 с.</span><span class="cover__logo">синтаксис;</span></p>
+            </div>
+          </a>
+          <div class="book__body">
+            <p class="chip">Проза · 2025</p>
+            <p class="book__author">Ольга Реутова</p>
+            <h2 class="book__title"><a href="#">Словарь утраченных мест</a></h2>
+            <div class="buy">
+              <span class="buy__price">860 ₽</span>
+              <a class="buy__link" href="#">Ozon</a>
+              <a class="buy__link" href="#">Wildberries</a>
+              <a class="buy__link" href="#">Лабиринт</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="block block--note">
+        <p class="rubric">Хроника</p>
+        <h2 class="note__title"><a href="#">Три книги «Синтаксиса» едут на осенние ярмарки</a></h2>
+        <p class="dek">Москва, Петербург и Казань: расписание стендов и встреч с авторами.</p>
+        <p class="meta">15 июля 2026</p>
+      </article>
+
+    </div>
+
+    <!-- Этаж 5: об издательстве -->
+    <div class="floor floor--1">
+
+      <article class="block block--about" id="about">
         <p class="rubric">Об издательстве</p>
         <blockquote class="about__quote">Нам интересны книги, в которых язык — не упаковка для истории, а само событие.</blockquote>
         <p class="about__sub">«Синтаксис» — независимое издательство современной русской прозы и поэзии. Мы выпускаем восемь–десять книг в год и делаем каждую так, как будто она первая.</p>
         <a class="text-btn" href="#">Манифест <span class="arr">→</span></a>
-      </div>
-    </div>
-  </section>
+      </article>
 
-  <!-- 02 · Журнал -->
-  <section class="section" id="journal">
-    <div class="wrap">
-      <div class="section__head">
-        <h2 class="section__title">Журнал <sup>02</sup></h2>
-        <a class="section__more" href="#">Все материалы <span class="arr">→</span></a>
-      </div>
-      <div class="journal-grid">
-        <a class="journal-feature" href="#">
-          <p class="rubric">Эссе</p>
-          <h3 class="journal-feature__title">Медленное чтение как сопротивление</h3>
-          <p class="journal-feature__dek">Зачем в эпоху бесконечной ленты нужны книги, которые требуют времени, — объясняет главный редактор «Синтаксиса».</p>
-          <p class="meta">28 июля 2026 · 12 минут</p>
-        </a>
-        <div class="journal-side">
-          <a class="journal-item" href="#">
-            <p class="rubric">Рецензия</p>
-            <h4>«Хор одиночек»: сорок голосов и одна нота</h4>
-            <p class="meta">1 августа 2026</p>
-          </a>
-          <a class="journal-item" href="#">
-            <p class="rubric">Интервью</p>
-            <h4>Марианна Верейская: «Стихи начинаются там, где заканчивается замысел»</h4>
-            <p class="meta">21 июля 2026</p>
-          </a>
-          <a class="journal-item" href="#">
-            <p class="rubric">Хроника</p>
-            <h4>Три книги «Синтаксиса» едут на осенние ярмарки</h4>
-            <p class="meta">15 июля 2026</p>
-          </a>
-        </div>
-      </div>
     </div>
-  </section>
 
-  <!-- 03 · Готовим к печати -->
-  <section class="section" id="soon">
-    <div class="wrap">
-      <div class="section__head">
-        <h2 class="section__title">Готовим к печати <sup>03</sup></h2>
-        <span class="section__note">осень — зима 2026</span>
-      </div>
-      <div class="soon-list">
-        <a class="soon-row" href="#">
-          <span class="soon-row__when">октябрь</span>
-          <span class="soon-row__author">Игорь Ставицкий</span>
-          <span class="soon-row__title">Комнаты без окон</span>
-          <span class="soon-row__genre">роман</span>
-        </a>
-        <a class="soon-row" href="#">
-          <span class="soon-row__when">ноябрь</span>
-          <span class="soon-row__author">Алиса Мун</span>
-          <span class="soon-row__title">Перевод с птичьего</span>
-          <span class="soon-row__genre">стихи</span>
-        </a>
-        <a class="soon-row" href="#">
-          <span class="soon-row__when">декабрь</span>
-          <span class="soon-row__author">Семнадцать авторов</span>
-          <span class="soon-row__title">Новая северная проза</span>
-          <span class="soon-row__genre">антология</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
+  </div>
 </main>
 
 <footer class="site-footer">
   <div class="wrap">
-    <p class="site-footer__mark">синтаксис<span class="wordmark__mark">;</span></p>
-    <p class="site-footer__tag">Издательство современной русской литературы</p>
-
-    <div class="site-footer__cols">
-      <div>
-        <p class="site-footer__h">Разделы</p>
-        <nav class="site-footer__nav" aria-label="Разделы сайта">
-          <a href="#books">Книги</a>
-          <a href="#journal">Журнал</a>
-          <a href="#">Авторы</a>
-          <a href="#about">Об издательстве</a>
-        </nav>
-      </div>
-      <div>
-        <p class="site-footer__h">Соцсети</p>
-        <nav class="site-footer__nav" aria-label="Соцсети">
-          <a href="#">Телеграм <span class="ext">↗</span></a>
-          <a href="#">ВКонтакте <span class="ext">↗</span></a>
-          <a href="#">Ютуб <span class="ext">↗</span></a>
-        </nav>
-      </div>
-      <div>
-        <p class="site-footer__h">Связь</p>
-        <nav class="site-footer__nav" aria-label="Контакты">
-          <a href="mailto:post@sintaksis.press">post@sintaksis.press</a>
-        </nav>
-        <p class="site-footer__note">Читаем самотёк: присылайте рукописи на почту, отвечаем в течение месяца.</p>
-      </div>
+    <div class="site-footer__top">
+      <p class="site-footer__mark">синтаксис<span class="wordmark__mark">;</span></p>
+      <p class="site-footer__tag">Издательство современной русской литературы</p>
     </div>
+
+    <div class="site-footer__row">
+      <nav class="site-footer__nav" aria-label="Разделы сайта">
+        <a href="#">Книги</a>
+        <a href="#">Журнал</a>
+        <a href="#">Авторы</a>
+        <a href="#about">Об издательстве</a>
+      </nav>
+      <nav class="site-footer__nav" aria-label="Соцсети">
+        <a href="#">Телеграм <span class="ext">↗</span></a>
+        <a href="#">ВКонтакте <span class="ext">↗</span></a>
+        <a href="#">Ютуб <span class="ext">↗</span></a>
+      </nav>
+      <a class="site-footer__mail" href="mailto:post@sintaksis.press">post@sintaksis.press</a>
+    </div>
+
+    <p class="site-footer__note">Читаем самотёк: присылайте рукописи на почту, отвечаем в течение месяца.</p>
 
     <div class="site-footer__base">
       <span>© 2026, издательство «Синтаксис»</span>
