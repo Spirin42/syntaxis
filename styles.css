@@ -1,0 +1,753 @@
+/* ============================================================
+   «Синтаксис» — издательство современной русской литературы
+   Токены, база, обложки, витрина, журнал, подвал
+   ============================================================ */
+
+:root {
+  --paper: #FFFFFF;
+  --ink: #16130E;
+  --ink-soft: #6E675C;
+  --rule: #E4E0D6;
+  --accent: #E0361A;        /* киноварь — на белом */
+  --accent-warm: #F94A26;   /* красный для тёмных плашек */
+  --serif: "Piazzolla", Georgia, "Times New Roman", serif;
+  --sans: "Golos Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+a { color: inherit; text-decoration: none; }
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--accent); color: #fff; }
+
+.wrap {
+  max-width: 1520px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4.5vw, 72px);
+}
+
+section[id] { scroll-margin-top: 88px; }
+
+.section { padding-block: clamp(56px, 8vw, 120px); }
+
+/* --- мелкая типографика ------------------------------------ */
+
+.chip {
+  display: inline-block;
+  border: 1px solid rgba(22, 19, 14, .28);
+  border-radius: 3px;
+  padding: .45em .8em;
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.chip--accent { color: var(--accent); border-color: rgba(224, 54, 26, .45); }
+
+.rubric {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.meta { font-size: 13px; color: var(--ink-soft); }
+
+.arr { display: inline-block; transition: transform .25s ease; }
+
+.text-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5em;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  padding-bottom: .5em;
+  border-bottom: 1px solid var(--ink);
+  transition: color .2s, border-color .2s;
+}
+
+.text-btn:hover { color: var(--accent); border-color: var(--accent); }
+.text-btn:hover .arr { transform: translateX(4px); }
+
+/* --- шапка -------------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 650;
+  font-size: 1.6rem;
+  letter-spacing: -.01em;
+  line-height: 1;
+}
+
+.wordmark__mark { color: var(--accent); font-weight: 750; }
+
+.site-nav {
+  display: flex;
+  gap: clamp(18px, 2.5vw, 36px);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.site-nav a { padding-block: 8px; transition: color .2s; }
+.site-nav a:hover { color: var(--accent); }
+
+/* --- герой -------------------------------------------------- */
+
+.hero { padding-block: clamp(44px, 7vh, 90px) clamp(56px, 9vh, 110px); }
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(24px, 3vw, 48px);
+  align-items: center;
+}
+
+.hero__text { grid-column: 1 / 8; }
+
+.hero__author {
+  margin-top: 30px;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  margin-top: 10px;
+  font-size: clamp(3.2rem, 9vw, 8.6rem);
+  font-weight: 640;
+  line-height: .95;
+  letter-spacing: -.025em;
+}
+
+.hero__title a { transition: color .25s; }
+.hero__title a:hover { color: var(--accent); }
+
+.hero__dek {
+  margin-top: 26px;
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.hero__actions {
+  margin-top: 38px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.hero__note { font-size: 13.5px; color: var(--ink-soft); }
+
+.hero__coverlink {
+  grid-column: 9 / 13;
+  width: 100%;
+  max-width: 500px;
+  justify-self: end;
+}
+
+/* --- обложки (чистый CSS, типографика в cqi) ---------------- */
+
+.cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  /* проценты, не cqi: свои контейнер-юниты элемент-контейнер брать у себя не может */
+  padding: 7%;
+  border-radius: 2px;
+  overflow: hidden;
+  transition: transform .4s cubic-bezier(.2, .65, .25, 1), box-shadow .4s;
+}
+
+/* волосяная обводка для светлых обложек */
+.cover--light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(22, 19, 14, .12);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.book-card:hover .cover,
+.hero__coverlink:hover .cover {
+  transform: translateY(-8px);
+  box-shadow: 0 34px 60px -38px rgba(22, 19, 14, .5);
+}
+
+.cover__top {
+  font-size: 12px;
+  font-size: 3.4cqi;
+  font-weight: 520;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.cover__bottom {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+  font-size: 11px;
+  font-size: 3.1cqi;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.cover__bottom em {
+  font-family: var(--serif);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: .02em;
+  font-size: 13px;
+  font-size: 3.7cqi;
+}
+
+.cover__logo {
+  font-family: var(--serif);
+  font-weight: 620;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  font-size: 3.4cqi;
+}
+
+.cover__display { font-family: var(--serif); }
+
+/* «Хор одиночек» — киноварь, конструктивизм */
+.cover--hor { background: var(--accent); color: #F5EFE3; }
+
+.cover--hor .cover__display {
+  margin-top: 6cqi;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-weight: 820;
+  line-height: .98;
+  letter-spacing: -.015em;
+}
+
+.cover--hor .l1 { font-size: 64px; font-size: 26cqi; }
+.cover--hor .l2 { font-size: 32px; font-size: 12.4cqi; margin-top: 1.5cqi; letter-spacing: .01em; }
+
+/* «Внутренняя речь» — стихи, воздух, рамка */
+.cover--vnutr {
+  background: #F4F0E6;
+  color: var(--ink);
+  align-items: center;
+  text-align: center;
+  padding: 9% 7%;
+}
+
+.cover--vnutr::before {
+  content: "";
+  position: absolute;
+  inset: 5cqi;
+  border: 1px solid rgba(22, 19, 14, .35);
+  pointer-events: none;
+}
+
+.cover--vnutr .cover__display {
+  margin-block: auto;
+  font-style: italic;
+  font-weight: 460;
+  font-size: 28px;
+  font-size: 10.2cqi;
+  line-height: 1.15;
+}
+
+.cover--vnutr .cover__bottom {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8cqi;
+}
+
+/* «Ничей дневник» — чёрный, строчные */
+.cover--nichey { background: #17140F; color: #EDE5D6; }
+
+.cover--nichey .cover__display {
+  margin-block: auto;
+  font-weight: 640;
+  font-size: 34px;
+  font-size: 12.6cqi;
+  line-height: 1.03;
+}
+
+.cover--nichey .accent { color: var(--accent-warm); }
+
+/* «Севернее сна» — индиго, корешковая вертикаль */
+.cover--sever { background: #24407E; color: #EFE8D8; }
+
+.cover--sever .cover__vert {
+  position: absolute;
+  left: 7cqi;
+  top: 7cqi;
+  bottom: 7cqi;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--serif);
+  font-weight: 730;
+  font-size: 24px;
+  font-size: 8.4cqi;
+  line-height: 1.1;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.cover--sever .cover__top {
+  margin-left: auto;
+  max-width: 60cqi;
+  text-align: right;
+}
+
+.cover--sever .cover__bottom { justify-content: flex-end; gap: 3cqi; }
+
+/* «Тише воды» — бутылочная зелень, инициал */
+.cover--tishe { background: #2E4A3B; color: #EFE9DA; }
+
+.cover--tishe .cover__initial {
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 96px;
+  font-size: 30cqi;
+  line-height: .85;
+  margin-top: 2cqi;
+}
+
+.cover--tishe .cover__display {
+  margin-top: auto;
+  font-weight: 620;
+  font-size: 26px;
+  font-size: 9cqi;
+  line-height: 1;
+  padding-bottom: 3cqi;
+  margin-bottom: 3.5cqi;
+  border-bottom: 1px solid rgba(239, 233, 218, .4);
+}
+
+/* «Словарь утраченных мест» — песок, словарная статья */
+.cover--slovar { background: #CFBD97; color: #201B12; }
+
+.cover--slovar .cover__display {
+  margin-block: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1cqi;
+}
+
+.cover--slovar .w1,
+.cover--slovar .w3 { font-weight: 700; font-size: 30px; font-size: 11cqi; line-height: 1; }
+
+.cover--slovar .w2 {
+  font-style: italic;
+  font-weight: 430;
+  font-size: 24px;
+  font-size: 8.6cqi;
+  line-height: 1;
+}
+
+/* --- шапки секций ------------------------------------------- */
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--ink);
+  padding-top: 22px;
+  margin-bottom: clamp(36px, 5vw, 64px);
+}
+
+.section__title {
+  font-size: clamp(2.1rem, 3.8vw, 3.4rem);
+  letter-spacing: -.015em;
+}
+
+.section__title sup {
+  font-family: var(--sans);
+  font-size: .32em;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--accent);
+  margin-left: .35em;
+}
+
+.section__more {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color .2s;
+}
+
+.section__more:hover { color: var(--accent); }
+.section__more:hover .arr { transform: translateX(4px); }
+
+.section__note { font-size: 13px; color: var(--ink-soft); white-space: nowrap; }
+
+/* --- витрина книг ------------------------------------------- */
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: clamp(24px, 2.8vw, 44px);
+  row-gap: clamp(48px, 5vw, 96px);
+}
+
+.place-a { grid-column: 1 / 6;  grid-row: 1; }
+.place-b { grid-column: 8 / 13; grid-row: 1; margin-top: clamp(64px, 9vw, 150px); }
+.place-c { grid-column: 2 / 6;  grid-row: 2; }
+.place-d { grid-column: 7 / 13; grid-row: 2; margin-top: clamp(48px, 6vw, 96px); }
+.place-e { grid-column: 1 / 6;  grid-row: 3; }
+
+.book-card { display: block; }
+
+.book-card__meta {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.book-card__author {
+  font-size: clamp(.95rem, 1.1vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.book-card__title {
+  font-size: clamp(1.7rem, 2.4vw, 2.7rem);
+  font-weight: 580;
+  line-height: 1.02;
+  letter-spacing: -.015em;
+}
+
+.book-card:hover .book-card__title {
+  text-decoration: underline;
+  text-decoration-thickness: .045em;
+  text-underline-offset: .08em;
+}
+
+.books-cta {
+  grid-column: 7 / 13;
+  grid-row: 3;
+  align-self: center;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 2.8vw, 2.9rem);
+  font-weight: 560;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  max-width: 14em;
+  transition: color .25s;
+}
+
+.books-cta:hover { color: var(--accent); }
+.books-cta:hover .arr { transform: translateX(8px); }
+
+/* --- об издательстве ---------------------------------------- */
+
+.about__inner { border-top: 1px solid var(--ink); padding-top: 22px; }
+
+.about__quote {
+  margin-top: 36px;
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3.6vw, 3.3rem);
+  font-weight: 480;
+  line-height: 1.18;
+  letter-spacing: -.01em;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+.about__sub {
+  margin-top: 28px;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.about__inner .text-btn { margin-top: 30px; }
+
+/* --- журнал ------------------------------------------------- */
+
+.journal-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(32px, 3.5vw, 56px);
+}
+
+.journal-feature { grid-column: 1 / 8; display: block; }
+
+.journal-feature__title {
+  margin-top: 22px;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  font-weight: 580;
+  line-height: 1.08;
+  letter-spacing: -.015em;
+}
+
+.journal-feature__dek {
+  margin-top: 18px;
+  max-width: 44ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.journal-feature .meta { margin-top: 24px; }
+
+.journal-feature:hover .journal-feature__title,
+.journal-item:hover h4 {
+  text-decoration: underline;
+  text-decoration-thickness: .05em;
+  text-underline-offset: .08em;
+}
+
+.journal-side { grid-column: 9 / 13; }
+
+.journal-item {
+  display: block;
+  padding: 22px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.journal-item:first-child { padding-top: 0; border-top: 0; }
+
+.journal-item h4 {
+  margin-top: 12px;
+  font-size: clamp(1.25rem, 1.7vw, 1.55rem);
+  font-weight: 570;
+  line-height: 1.22;
+  letter-spacing: -.01em;
+}
+
+.journal-item .meta { margin-top: 10px; }
+
+/* --- готовим к печати --------------------------------------- */
+
+.soon-list { border-bottom: 1px solid var(--rule); }
+
+.soon-row {
+  display: grid;
+  grid-template-columns: 110px 230px 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.soon-row__when { font-size: 13px; color: var(--ink-soft); }
+
+.soon-row__author {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.soon-row__title {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 1.9vw, 1.75rem);
+  font-weight: 570;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  transition: color .2s;
+}
+
+.soon-row__genre { font-size: 13px; color: var(--ink-soft); justify-self: end; }
+
+.soon-row:hover .soon-row__title { color: var(--accent); }
+
+/* --- подвал ------------------------------------------------- */
+
+.site-footer {
+  background: var(--ink);
+  color: #F1EDE4;
+  padding: clamp(56px, 8vw, 96px) 0 36px;
+}
+
+.site-footer__mark {
+  font-family: var(--serif);
+  font-weight: 680;
+  font-size: clamp(3.2rem, 9vw, 8rem);
+  line-height: .9;
+  letter-spacing: -.02em;
+}
+
+.site-footer__tag {
+  margin-top: 16px;
+  font-size: 15px;
+  color: rgba(241, 237, 228, .55);
+}
+
+.site-footer__cols {
+  margin-top: clamp(40px, 6vw, 72px);
+  padding-top: 32px;
+  border-top: 1px solid rgba(241, 237, 228, .18);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.site-footer__h {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(241, 237, 228, .5);
+  margin-bottom: 16px;
+}
+
+.site-footer__nav { display: flex; flex-direction: column; gap: 10px; }
+
+.site-footer__nav a {
+  font-size: 15.5px;
+  width: fit-content;
+  transition: color .2s;
+}
+
+.site-footer__nav a:hover { color: var(--accent-warm); }
+
+.site-footer__nav .ext { font-size: .8em; opacity: .6; }
+
+.site-footer__note {
+  margin-top: 18px;
+  max-width: 30ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(241, 237, 228, .5);
+}
+
+.site-footer__base {
+  margin-top: clamp(48px, 7vw, 80px);
+  padding-top: 24px;
+  border-top: 1px solid rgba(241, 237, 228, .18);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+  color: rgba(241, 237, 228, .5);
+}
+
+.site-footer__base a { transition: color .2s; }
+.site-footer__base a:hover { color: #F1EDE4; }
+
+/* --- адаптив ------------------------------------------------ */
+
+@media (max-width: 1100px) {
+  .books-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .place-a, .place-b, .place-c, .place-d, .place-e {
+    grid-column: auto;
+    grid-row: auto;
+    margin-top: 0;
+  }
+
+  .book-card:nth-child(even) { margin-top: 56px; }
+
+  .books-cta { grid-column: 1 / -1; grid-row: auto; padding: 16px 0; }
+}
+
+@media (max-width: 880px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero__text { grid-column: auto; }
+
+  .hero__coverlink {
+    grid-column: auto;
+    justify-self: start;
+    max-width: 400px;
+    margin-top: 48px;
+  }
+
+  .journal-grid { grid-template-columns: 1fr; }
+  .journal-feature, .journal-side { grid-column: auto; }
+
+  .journal-side .journal-item:first-child {
+    border-top: 1px solid var(--rule);
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .soon-row { display: block; }
+  .soon-row__when { display: block; margin-bottom: 8px; }
+  .soon-row__author { display: block; margin-bottom: 6px; }
+  .soon-row__title { display: block; }
+  .soon-row__genre { display: block; margin-top: 8px; }
+
+  .site-footer__cols { grid-template-columns: 1fr; gap: 36px; }
+}
+
+@media (max-width: 620px) {
+  .books-grid { grid-template-columns: 1fr; }
+  .book-card:nth-child(even) { margin-top: 0; }
+
+  .site-nav { gap: 16px; font-size: 13px; }
+  .nav-stub { display: none; }
+
+  .site-footer__base { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
