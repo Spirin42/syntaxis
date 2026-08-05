@@ -274,9 +274,14 @@ class SX_Nav_Walker extends Walker_Nav_Menu {
     public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
         if ($depth > 0) return;
 
+        // Фильтр nav_menu_css_class применяет сам Walker_Nav_Menu, а мы его
+        // метод переопределили — значит, применяем сами. Иначе наши же
+        // поправки к «текущему разделу» (ниже) до разметки не доедут.
+        $classes = apply_filters('nav_menu_css_class', array_filter((array) $item->classes), $item, $args, $depth);
+
         $current = (bool) array_intersect(
-            (array) $item->classes,
-            ['current-menu-item', 'current-menu-parent', 'current-menu-ancestor', 'current_page_parent']
+            $classes,
+            ['current-menu-item', 'current-menu-parent', 'current-menu-ancestor']
         );
 
         $output .= sprintf(
@@ -304,10 +309,34 @@ function sx_nav_fallback(): void {
     }
 }
 
-/** Страница книги — часть раздела «Книги», это надо подсказать меню. */
+/**
+ * Какой пункт меню считать текущим.
+ *
+ * Две поправки к тому, что делает WordPress сам:
+ *
+ * 1. Он вешает `current_page_parent` на пункт «страница записей» вообще
+ *    на всех страницах, которые не являются страницами, — из-за этого
+ *    «Журнал» подсвечивался и в каталоге, и на странице книги.
+ * 2. Про то, что страница книги и архив жанра относятся к разделу
+ *    «Книги», он не знает. Сравниваем адрес пункта с корнем раздела —
+ *    так работает и для обычной ссылки, и для пункта-архива.
+ */
 add_filter('nav_menu_css_class', function ($classes, $item) {
-    if ($item->type === 'post_type_archive' && $item->object === 'book' && is_singular('book')) {
+    $classes = array_diff((array) $classes, ['current_page_parent']);
+
+    $path = fn($url) => untrailingslashit((string) parse_url((string) $url, PHP_URL_PATH));
+
+    $here       = $path($item->url);
+    $books      = $path(get_post_type_archive_link('book'));
+    $journal_id = (int) get_option('page_for_posts');
+    $journal    = $journal_id ? $path(get_permalink($journal_id)) : '';
+
+    $in_books   = is_post_type_archive('book') || is_singular('book') || is_tax('genre');
+    $in_journal = is_home() || is_singular('post') || is_category() || is_date();
+
+    if (($here === $books && $in_books) || ($here !== '' && $here === $journal && $in_journal)) {
         $classes[] = 'current-menu-item';
     }
-    return $classes;
+
+    return array_unique($classes);
 }, 10, 2);
