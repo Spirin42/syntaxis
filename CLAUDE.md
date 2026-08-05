@@ -73,12 +73,14 @@ Git: репозиторий инициализирован, приватный �
 | Макет | Шаблон темы |
 |---|---|
 | `index.html` | `front-page.php` |
-| `books.html` | `archive.php` (он же архивы жанров) |
+| `books.html` | `archive-book.php`, а `taxonomy-genre.php` его подключает |
 | `books/hor-odinochek.html` | `single-book.php` |
 | `journal/medlennoe-chtenie.html` | `single.php` |
 | `authors.html` | `page-authors.php` |
 | `about.html` | `page.php` + подстановки |
-| — (нового нет в макете) | `home.php` (лента журнала), `category.php`, `search.php`, `404.php` |
+| — (нового нет в макете) | `home.php` (лента журнала), `category.php`, `search.php`, `404.php`, `index.php` (архивы по дате и автору) |
+
+**Почему `archive-book.php`, а не `archive.php`.** Файл `archive.php` перехватил бы заодно архивы по дате и по автору — и журнальные записи вышли бы книжными карточками с выдуманными обложками. Каталог должен называться `archive-book.php`; жанры подключают его через `get_template_part`, а дата и автор проваливаются в `index.php` с лентой журнала. Не переименовывать обратно.
 
 Главная — мозаика с видимыми границами; внутренние страницы наоборот воздушные: белое поле, волосяные разделители, текст прижат влево. Общие детали шапки страницы: `.crumbs` (хлебные крошки), `.page-head` (рубрика + огромный `.page-head__title` + `.page-head__sub`), `.section` (флекс: ярлык `.section__label` слева, `.section__body` справа; узко — ярлык встаёт сверху), `.prose`, `.lead-serif`, полоса «читайте дальше» `.more`. Текущий пункт меню помечается `aria-current="page"` — перед ним появляется красная точка.
 

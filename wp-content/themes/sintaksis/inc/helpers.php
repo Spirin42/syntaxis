@@ -16,17 +16,20 @@ if (!defined('ABSPATH')) exit;
  *   initial  — крупный инициал плюс название
  */
 function sx_cover_palettes(): array {
+    // Порядок важен: первая палитра достаётся книге, у которой стиль ещё
+    // не выбран, поэтому сверху те, что принимают любое название,
+    // а внизу — с особенностями (огромное первое слово, три строки, инициал).
     return [
-        'hor'     => ['label' => 'Киноварь, конструктивизм',        'light' => false, 'layout' => 'lines2'],
-        'nichey'  => ['label' => 'Чёрная, строчные',                'light' => false, 'layout' => 'plain'],
-        'sever'   => ['label' => 'Индиго, вертикальный корешок',    'light' => false, 'layout' => 'vert'],
-        'tishe'   => ['label' => 'Бутылочная зелень, инициал',      'light' => false, 'layout' => 'initial'],
         'kabinet' => ['label' => 'Бордо, линейки',                  'light' => false, 'layout' => 'plain'],
         'tabak'   => ['label' => 'Табачная, разрядка',              'light' => false, 'layout' => 'plain'],
         'polyn'   => ['label' => 'Олива, курсив по центру',         'light' => false, 'layout' => 'plain'],
+        'nichey'  => ['label' => 'Чёрная, строчные',                'light' => false, 'layout' => 'plain'],
         'vnutr'   => ['label' => 'Слоновая кость, рамка',           'light' => true,  'layout' => 'plain'],
-        'slovar'  => ['label' => 'Песок, словарная статья',         'light' => true,  'layout' => 'lines3'],
         'stekla'  => ['label' => 'Светлое стекло, тонкий шрифт',    'light' => true,  'layout' => 'plain'],
+        'hor'     => ['label' => 'Киноварь, конструктивизм',        'light' => false, 'layout' => 'lines2'],
+        'slovar'  => ['label' => 'Песок, словарная статья',         'light' => true,  'layout' => 'lines3'],
+        'sever'   => ['label' => 'Индиго, вертикальный корешок',    'light' => false, 'layout' => 'vert'],
+        'tishe'   => ['label' => 'Бутылочная зелень, инициал',      'light' => false, 'layout' => 'initial'],
         'pustoe'  => ['label' => 'Белая, крупный знак',             'light' => true,  'layout' => 'initial'],
     ];
 }

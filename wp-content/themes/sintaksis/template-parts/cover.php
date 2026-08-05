@@ -44,6 +44,11 @@ $vert    = '';
 
 switch ($palette['layout']) {
     case 'lines2':                       // .l1 — огромная первая строка, .l2 — остальное
+        // Название в одну строку целиком в .l1 не влезет: у этой палитры
+        // первая строка идёт в 26cqi. Режем по первому пробелу.
+        if (count($lines) === 1 && str_contains($lines[0], ' ')) {
+            $lines = explode(' ', $lines[0], 2);
+        }
         $first = array_shift($lines) ?? '';
         $rest  = implode(' ', $lines);
         $display = '<span class="l1">' . $first . '</span>';
