@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": false,
+    "useRootPaddingAwareAlignments": false,
+    "color": {
+      "custom": false,
+      "customDuotone": false,
+      "customGradient": false,
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "duotone": [],
+      "gradients": [],
+      "link": false,
+      "palette": [
+        { "slug": "ink",      "name": "Чернила",   "color": "#16130E" },
+        { "slug": "paper",    "name": "Бумага",    "color": "#FFFFFF" },
+        { "slug": "accent",   "name": "Киноварь",  "color": "#E0361A" },
+        { "slug": "ink-soft", "name": "Серый",     "color": "#6E675C" }
+      ]
+    },
+    "typography": {
+      "customFontSize": false,
+      "defaultFontSizes": false,
+      "dropCap": false,
+      "fontStyle": false,
+      "fontWeight": false,
+      "letterSpacing": false,
+      "lineHeight": false,
+      "textTransform": false,
+      "fontSizes": []
+    },
+    "spacing": {
+      "customSpacingSize": false,
+      "margin": false,
+      "padding": false,
+      "spacingSizes": [],
+      "units": []
+    },
+    "border": { "color": false, "radius": false, "style": false, "width": false },
+    "dimensions": { "minHeight": false },
+    "shadow": { "defaultPresets": false, "presets": [] },
+    "layout": { "contentSize": "68ch", "wideSize": "68ch" }
+  },
+  "styles": {}
+}
