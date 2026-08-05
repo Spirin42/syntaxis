@@ -321,8 +321,20 @@ function sx_import_demo(): array {
     update_option('start_of_week', 1);
     update_option('default_comment_status', 'closed');
     update_option('default_ping_status', 'closed');
-    update_option('permalink_structure', '/journal/%postname%/');
-    update_option('category_base', 'rubrika');
+
+    // Через $wp_rewrite, а не update_option: иначе объект правил останется
+    // со старой структурой, и flush_rewrite_rules() в конце сгенерирует
+    // адреса от неё — на свежей установке статьи журнала отдавали бы 404.
+    global $wp_rewrite;
+    $wp_rewrite->set_permalink_structure('/journal/%postname%/');
+    $wp_rewrite->set_category_base('rubrika');
+
+    // Базу рубрик WordPress запоминает в момент регистрации таксономии, то есть
+    // на init — а он в этом запросе уже прошёл со старым значением. Без
+    // перерегистрации flush_rewrite_rules() в конце сохранил бы адреса от него,
+    // и рубрики отдавали бы 404 до следующего сохранения постоянных ссылок.
+    create_initial_taxonomies();
+
     $log[] = 'Настройки сайта и постоянные ссылки';
 
     // --- Рубрики журнала --------------------------------------------------
