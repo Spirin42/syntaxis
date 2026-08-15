@@ -20,8 +20,9 @@ Text Domain: sintaksis
   --ink: #16130E;
   --ink-soft: #6E675C;
   --rule: #E4E0D6;
-  --accent: #E0361A;        /* киноварь — на белом */
-  --accent-warm: #F94A26;   /* красный для тёмных плашек */
+  --accent: #682D57;        /* слива — на белом */
+  --accent-warm: #B0669B;   /* светлая слива для тёмных плашек */
+  --fade: .35s;             /* ховер загорается мгновенно, гаснет за это время */
   --serif: "Piazzolla", Georgia, "Times New Roman", serif;
   --sans: "Golos Text", "Helvetica Neue", Arial, sans-serif;
 }
@@ -72,20 +73,16 @@ a:focus-visible {
   border: 1px solid rgba(22, 19, 14, .28);
   border-radius: 3px;
   padding: .45em .8em;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 550;
-  letter-spacing: .13em;
-  text-transform: uppercase;
   line-height: 1;
 }
 
-.chip--accent { color: var(--accent); border-color: rgba(224, 54, 26, .45); }
+.chip--accent { color: var(--accent); border-color: rgba(104, 45, 87, .45); }
 
 .rubric {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .15em;
-  text-transform: uppercase;
   color: var(--accent);
 }
 
@@ -105,16 +102,14 @@ a:focus-visible {
   display: inline-flex;
   align-items: baseline;
   gap: .5em;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
   padding-bottom: .5em;
   border-bottom: 1px solid var(--ink);
-  transition: color .2s, border-color .2s;
+  transition: color var(--fade), border-color var(--fade);
 }
 
-.text-btn:hover { color: var(--accent); border-color: var(--accent); }
+.text-btn:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 .text-btn:hover .arr { transform: translateX(4px); }
 
 /* --- шапка -------------------------------------------------- */
@@ -155,13 +150,12 @@ a:focus-visible {
   gap: 4px clamp(16px, 2.5vw, 36px);
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: .02em;
 }
 
-.site-nav a { padding-block: 8px; transition: color .2s; }
-.site-nav a:hover { color: var(--accent); }
+.site-nav a { padding-block: 8px; transition: color var(--fade); }
+.site-nav a:hover { color: var(--accent); transition-duration: 0s; }
 
-/* текущий раздел — красная точка перед пунктом */
+/* текущий раздел — сливовая точка перед пунктом */
 .site-nav a[aria-current="page"] { font-weight: 650; }
 .site-nav a[aria-current="page"]::before { content: "· "; color: var(--accent); }
 
@@ -256,8 +250,6 @@ a:focus-visible {
   font-size: clamp(.78rem, .95vw, 1.1rem);
   font-size: clamp(.78rem, 2.3cqi, 1.1rem);
   font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
 }
 
 .book__title {
@@ -270,10 +262,10 @@ a:focus-visible {
 }
 
 .book__title a,
-.note__title a { transition: color .25s; }
+.note__title a { transition: color var(--fade); }
 
 .book__title a:hover,
-.note__title a:hover { color: var(--accent); }
+.note__title a:hover { color: var(--accent); transition-duration: 0s; }
 
 .book__body .dek { margin-top: 14px; }
 
@@ -291,7 +283,6 @@ a:focus-visible {
 .buy__price {
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
   margin-right: 6px;
 }
@@ -302,12 +293,11 @@ a:focus-visible {
   padding: .5em .85em;
   font-size: 12.5px;
   font-weight: 550;
-  letter-spacing: .02em;
   line-height: 1;
-  transition: color .2s, border-color .2s;
+  transition: color var(--fade), border-color var(--fade);
 }
 
-.buy__link:hover { color: var(--accent); border-color: rgba(224, 54, 26, .55); }
+.buy__link:hover { color: var(--accent); border-color: rgba(104, 45, 87, .55); transition-duration: 0s; }
 
 /* --- блок заметки (материал журнала) ------------------------ */
 
@@ -688,10 +678,10 @@ a:focus-visible {
 .site-footer__nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 
 .site-footer__nav a,
-.site-footer__mail { font-size: 14.5px; transition: color .2s; }
+.site-footer__mail { font-size: 14.5px; transition: color var(--fade); }
 
 .site-footer__nav a:hover,
-.site-footer__mail:hover { color: var(--accent-warm); }
+.site-footer__mail:hover { color: var(--accent-warm); transition-duration: 0s; }
 
 .site-footer__nav .ext { font-size: .8em; opacity: .6; }
 
@@ -715,8 +705,8 @@ a:focus-visible {
   color: rgba(241, 237, 228, .5);
 }
 
-.site-footer__base a { transition: color .2s; }
-.site-footer__base a:hover { color: #F1EDE4; }
+.site-footer__base a { transition: color var(--fade); }
+.site-footer__base a:hover { color: #F1EDE4; transition-duration: 0s; }
 
 /* --- движение ----------------------------------------------- */
 
@@ -738,15 +728,13 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 10px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 550;
-  letter-spacing: .1em;
-  text-transform: uppercase;
   color: var(--ink-soft);
 }
 
-.crumbs a { transition: color .2s; }
-.crumbs a:hover { color: var(--accent); }
+.crumbs a { transition: color var(--fade); }
+.crumbs a:hover { color: var(--accent); transition-duration: 0s; }
 .crumbs__sep { opacity: .5; }
 
 /* Шапка внутренней страницы: рубрика — заголовок — подводка */
@@ -775,8 +763,6 @@ a:focus-visible {
 .page-head__count {
   margin-top: 18px;
   font-size: 13px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
@@ -793,10 +779,8 @@ a:focus-visible {
 
 .section__label {
   flex: 0 1 180px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .15em;
-  text-transform: uppercase;
   color: var(--accent);
   padding-top: .45em;
 }
@@ -810,8 +794,8 @@ a:focus-visible {
 }
 
 .prose p + p { margin-top: 1.1em; }
-.prose a { border-bottom: 1px solid var(--rule); transition: color .2s, border-color .2s; }
-.prose a:hover { color: var(--accent); border-color: var(--accent); }
+.prose a { border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.prose a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 
 .prose code {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -861,8 +845,6 @@ a:focus-visible {
   margin-top: 16px;
   font-size: clamp(.85rem, 1.2vw, 1.05rem);
   font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
 }
 
 .bookpage__title {
@@ -900,7 +882,7 @@ a:focus-visible {
   color: var(--paper);
 }
 
-.buy__link--solid:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.buy__link--solid:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); transition-duration: 0s; }
 
 .buy__note {
   flex-basis: 100%;
@@ -945,10 +927,8 @@ a:focus-visible {
 }
 
 .specs dt {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
   color: var(--ink-soft);
 }
 
@@ -1038,8 +1018,8 @@ a:focus-visible {
   letter-spacing: -.01em;
 }
 
-.article__body a { border-bottom: 1px solid var(--rule); transition: color .2s, border-color .2s; }
-.article__body a:hover { color: var(--accent); border-color: var(--accent); }
+.article__body a { border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.article__body a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 
 .article__body > .article__end {
   margin-top: clamp(30px, 4vw, 48px);
@@ -1067,10 +1047,8 @@ a:focus-visible {
 .inset__body { flex: 1 1 240px; min-width: 0; }
 
 .inset__label {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .14em;
-  text-transform: uppercase;
   color: var(--accent);
 }
 
@@ -1102,10 +1080,8 @@ a:focus-visible {
 
 .card__author {
   margin-top: 16px;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
 }
 
 .card__title {
@@ -1116,8 +1092,8 @@ a:focus-visible {
   letter-spacing: -.015em;
 }
 
-.card__title a { transition: color .2s; }
-.card__title a:hover { color: var(--accent); }
+.card__title a { transition: color var(--fade); }
+.card__title a:hover { color: var(--accent); transition-duration: 0s; }
 
 .card__meta {
   margin-top: auto;
@@ -1133,10 +1109,8 @@ a:focus-visible {
 .card__price { color: var(--ink); font-weight: 650; font-variant-numeric: tabular-nums; }
 
 .card__soon {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
   color: var(--accent);
 }
 
@@ -1146,10 +1120,8 @@ a:focus-visible {
   margin-top: clamp(8px, 1.5vw, 18px);
   padding-top: 16px;
   border-top: 1px solid var(--rule);
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .15em;
-  text-transform: uppercase;
   color: var(--ink-soft);
 }
 
@@ -1241,7 +1213,6 @@ a:focus-visible {
   display: block;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: .14em;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
@@ -1318,10 +1289,10 @@ a:focus-visible {
   font-weight: 560;
   letter-spacing: -.01em;
   border-bottom: 1px solid var(--rule);
-  transition: color .2s, border-color .2s;
+  transition: color var(--fade), border-color var(--fade);
 }
 
-.contact-line a:hover { color: var(--accent); border-color: var(--accent); }
+.contact-line a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 
 /* ============================================================
    ПОЛОСА «ЧИТАЙТЕ ДАЛЬШЕ» — общая для книги и статьи
@@ -1333,10 +1304,8 @@ a:focus-visible {
 }
 
 .more__label {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .15em;
-  text-transform: uppercase;
   color: var(--ink-soft);
 }
 
@@ -1357,8 +1326,8 @@ a:focus-visible {
   letter-spacing: -.015em;
 }
 
-.more__item h3 a { transition: color .2s; }
-.more__item h3 a:hover { color: var(--accent); }
+.more__item h3 a { transition: color var(--fade); }
+.more__item h3 a:hover { color: var(--accent); transition-duration: 0s; }
 .more__item .meta { margin-top: 10px; }
 
 /* ============================================================
@@ -1397,8 +1366,8 @@ a:focus-visible {
   max-width: 24ch;
 }
 
-.feed__title a { transition: color .2s; }
-.feed__title a:hover { color: var(--accent); }
+.feed__title a { transition: color var(--fade); }
+.feed__title a:hover { color: var(--accent); transition-duration: 0s; }
 
 .feed__dek {
   margin-top: 12px;
@@ -1419,14 +1388,12 @@ a:focus-visible {
   gap: 12px 24px;
   padding-block: clamp(20px, 3vw, 32px) clamp(48px, 7vw, 96px);
   border-top: 1px solid var(--rule);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
 }
 
-.pager a { transition: color .2s; }
-.pager a:hover { color: var(--accent); }
+.pager a { transition: color var(--fade); }
+.pager a:hover { color: var(--accent); transition-duration: 0s; }
 
 /* --- поиск --------------------------------------------------- */
 
@@ -1439,10 +1406,8 @@ a:focus-visible {
 
 .searchform__label {
   flex-basis: 100%;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .15em;
-  text-transform: uppercase;
   color: var(--ink-soft);
 }
 
@@ -1455,28 +1420,26 @@ a:focus-visible {
   border: 1px solid var(--rule);
   border-radius: 3px;
   padding: .7em .9em;
-  transition: border-color .2s;
+  transition: border-color var(--fade);
 }
 
-.searchform__field:focus { outline: none; border-color: var(--accent); }
+.searchform__field:focus { outline: none; border-color: var(--accent); transition-duration: 0s; }
 
 .searchform__go {
   flex: 0 0 auto;
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: .13em;
-  text-transform: uppercase;
   color: var(--paper);
   background: var(--ink);
   border: 1px solid var(--ink);
   border-radius: 3px;
   padding: .7em 1.3em;
   cursor: pointer;
-  transition: background .2s, border-color .2s;
+  transition: background var(--fade), border-color var(--fade);
 }
 
-.searchform__go:hover { background: var(--accent); border-color: var(--accent); }
+.searchform__go:hover { background: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 
 /* --- пустое состояние ---------------------------------------- */
 
@@ -1490,8 +1453,8 @@ a:focus-visible {
   max-width: 36ch;
 }
 
-.notice a { color: var(--ink); border-bottom: 1px solid var(--rule); }
-.notice a:hover { color: var(--accent); border-color: var(--accent); }
+.notice a { color: var(--ink); border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.notice a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
 
 /* --- обложка-картинка ---------------------------------------- */
 

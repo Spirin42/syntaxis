@@ -299,7 +299,7 @@ add_action('admin_head', function () {
       .sx-field--textarea, .sx-field--note { grid-column: 1 / -1; }
       .sx-fields .sx-label { display: block; font-weight: 600; margin-bottom: 3px; }
       .sx-fields .sx-hint { display: block; margin-top: 3px; color: #646970; font-size: 12px; line-height: 1.4; }
-      .sx-note { grid-column: 1 / -1; margin: 0 0 6px; padding: 8px 12px; background: #f6f7f7; border-left: 3px solid #E0361A; font-size: 13px; }
+      .sx-note { grid-column: 1 / -1; margin: 0 0 6px; padding: 8px 12px; background: #f6f7f7; border-left: 3px solid #682D57; font-size: 13px; }
       #sx_front .sx-fields { grid-template-columns: 1fr; }
     </style>
     <?php

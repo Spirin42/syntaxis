@@ -63,7 +63,7 @@ add_filter('wp_resource_hints', function ($urls, $relation) {
 /** Фавиконка — та же красная точка с запятой, что в макете. */
 add_action('wp_head', function () {
     if (has_site_icon()) return;
-    echo '<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=\'http://www.w3.org/2000/svg\'%20viewBox=\'0%200%2064%2064\'%3E%3Ctext%20x=\'32\'%20y=\'54\'%20font-family=\'Georgia,serif\'%20font-size=\'64\'%20text-anchor=\'middle\'%20fill=\'%23E0361A\'%3E;%3C/text%3E%3C/svg%3E">' . "\n";
+    echo '<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=\'http://www.w3.org/2000/svg\'%20viewBox=\'0%200%2064%2064\'%3E%3Ctext%20x=\'32\'%20y=\'54\'%20font-family=\'Georgia,serif\'%20font-size=\'64\'%20text-anchor=\'middle\'%20fill=\'%23682D57\'%3E;%3C/text%3E%3C/svg%3E">' . "\n";
 }, 1);
 
 /** Классы body нам не нужны, но WP-плагины на них рассчитывают — оставляем. */
