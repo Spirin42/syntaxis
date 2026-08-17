@@ -1,0 +1,1662 @@
+/*
+Theme Name: Синтаксис
+Theme URI: https://github.com/Spirin42/syntaxis
+Author: Издательство «Синтаксис»
+Description: Тема сайта издательства «Синтаксис». Мозаика этажей на главной, CSS-обложки книг, журнал, каталог. Без JS и без сборки — только HTML и CSS.
+Version: 1.0
+Requires at least: 6.5
+Requires PHP: 8.0
+License: Proprietary
+Text Domain: sintaksis
+*/
+
+/* ============================================================
+   «Синтаксис» — издательство современной русской литературы
+   Токены, база, мозаика (этажи и блоки), обложки, подвал
+   ============================================================ */
+
+:root {
+  --paper: #FFFFFF;
+  --ink: #16130E;
+  --ink-soft: #6E675C;
+  /* физически линия тоньше 1px не бывает (полпикселя в 1px-зазорах
+     мозаики рендерится непредсказуемо), поэтому «тоньше» = светлее */
+  --rule: #F0EEE8;
+  --accent: #682D57;        /* слива — на белом */
+  --accent-warm: #B0669B;   /* светлая слива для тёмных плашек */
+  --fade: .35s;             /* ховер загорается мгновенно, гаснет за это время */
+  --serif: "Piazzolla", Georgia, "Times New Roman", serif;
+  --sans: "Golos Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+a { color: inherit; text-decoration: none; }
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--accent); color: #fff; }
+
+/* Видно только программам чтения с экрана и поисковику. Нужен ровно
+   в одном месте — заголовок главной, которого в дизайне нет. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wrap {
+  max-width: 1520px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4.5vw, 72px);
+}
+
+[id] { scroll-margin-top: 88px; }
+
+/* --- мелкая типографика ------------------------------------ */
+
+.chip {
+  display: inline-block;
+  border: 1px solid rgba(22, 19, 14, .28);
+  border-radius: 3px;
+  padding: .4em .65em;
+  font-size: 12.5px;
+  line-height: 1;
+}
+
+.chip--accent { color: var(--accent); border-color: rgba(104, 45, 87, .45); }
+
+.rubric {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.meta { font-size: 13px; color: var(--ink-soft); }
+
+.dek {
+  font-size: clamp(.95rem, 1.05vw, 1.125rem);
+  font-size: clamp(.95rem, 1.3cqi, 1.125rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+
+.arr { display: inline-block; transition: transform .25s ease; }
+
+.text-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5em;
+  font-size: 14px;
+  font-weight: 600;
+  padding-bottom: .1em;
+  border-bottom: 1px solid var(--ink);
+  transition: color var(--fade), border-color var(--fade);
+}
+
+.text-btn:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+.text-btn:hover .arr { transform: translateX(4px); }
+
+/* --- шапка -------------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 24px;
+  row-gap: 4px;
+  padding-block: 15px;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 650;
+  font-size: 1.6rem;
+  letter-spacing: -.01em;
+  line-height: 1;
+}
+
+.wordmark__mark { color: var(--accent); font-weight: 750; }
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px clamp(16px, 2.5vw, 36px);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.site-nav a { padding-block: 8px; transition: color var(--fade); }
+.site-nav a:hover { color: var(--accent); transition-duration: 0s; }
+
+/* текущий раздел — сливовая точка перед пунктом */
+.site-nav a[aria-current="page"] { font-weight: 650; }
+.site-nav a[aria-current="page"]::before { content: "· "; color: var(--accent); }
+
+/* --- мозаика: этажи и блоки ---------------------------------
+   Главная — вертикальный стопкой набор «этажей», этаж — ряд
+   «блоков» (книга, заметка, манифест…). Все линии мозаики —
+   это фон .mosaic, просвечивающий сквозь 1px-зазоры между
+   белыми блоками: границы блока всегда видны и всегда 1px. */
+
+.mosaic {
+  margin-block: clamp(20px, 3vw, 40px) clamp(40px, 5.5vw, 72px);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--rule);
+  background: var(--rule);
+}
+
+/* Этаж: сколько блоков встанет в ряд, задаёт базис (--basis);
+   не влезли — переносятся и растягиваются на всю ширину.
+   Никаких медиазапросов: перенос и есть адаптив. */
+.floor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+}
+
+.floor--2 { --basis: 460px; }
+.floor--3 { --basis: 320px; }
+.floor--4 { --basis: 250px; }
+
+.block {
+  background: var(--paper);
+  flex: 1 1 var(--basis, 100%);
+  min-width: 0;
+  padding: clamp(16px, 1.7vw, 32px);
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+}
+
+.floor--1 > .block { padding: clamp(20px, 2.5vw, 40px); }
+
+/* --- блок книги --------------------------------------------- */
+
+.book {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vw, 22px);
+}
+
+.book__coverlink {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+}
+
+.book__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* Широкий блок (этаж из одного-двух, растянутый «хвост» ряда):
+   книга ложится горизонтально — обложка слева, текст справа.
+   Порог — ширина самого блока, а не вьюпорта. */
+@container (min-width: 520px) {
+  .book {
+    display: grid;
+    grid-template-columns: clamp(200px, 31cqi, 430px) minmax(0, 1fr);
+    gap: clamp(24px, 3vw, 56px);
+    gap: clamp(24px, 4.5cqi, 60px);
+  }
+
+  .book__coverlink {
+    align-self: start;
+    justify-self: start;
+  }
+
+  /* и в горизонтальном блоке порядок тот же, что в вертикальном:
+     всё собрано у верхней кромки, воздух остаётся внизу */
+  .book__body .buy { padding-top: 28px; }
+
+  /* Этаж «две книги»: обложка на 10% крупнее общей. Правило живёт
+     внутри контейнер-квери, потому что колонка есть только в гриде. */
+  .floor--2 .book { grid-template-columns: clamp(220px, 34cqi, 470px) minmax(0, 1fr); }
+}
+
+.book__author {
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-size: clamp(.88rem, 1.05vw, 1.32rem);
+  font-size: clamp(.88rem, 2.55cqi, 1.32rem);
+  font-weight: 600;
+}
+
+.book__title {
+  font-size: clamp(1.75rem, 3.5vw, 3.3rem);
+  font-size: clamp(1.75rem, 9cqi, 7.2rem);
+  font-weight: 620;
+  line-height: .98;
+  letter-spacing: -.02em;
+}
+
+.book__title a,
+.note__title a { transition: color var(--fade); }
+
+.book__title a:hover,
+.note__title a:hover { color: var(--accent); transition-duration: 0s; }
+
+.book__body .dek { margin-top: 14px; }
+
+/* --- покупка ------------------------------------------------ */
+
+/* Ряд покупки идёт сразу за названием, а не по нижней кромке:
+   порядок в блоке — обложка, автор, название, покупка, воздух.
+   Воздух собирается внизу сам, без auto-отступов. */
+.buy {
+  padding-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.buy__price {
+  font-size: 15px;
+}
+
+.buy__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  border: 1px solid rgba(22, 19, 14, .28);
+  border-radius: 3px;
+  padding: .4em .65em;
+  font-size: 12.5px;
+  line-height: 1;
+  transition: color var(--fade), border-color var(--fade);
+}
+
+/* Иконка версии книги: контур в currentColor, размер в em —
+   растёт вместе с кеглем кнопки, в том числе в .buy--lg. */
+.buy__icon {
+  flex: none;
+  width: 1.25em;
+  height: 1.25em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.buy__link:hover { color: var(--accent); border-color: rgba(104, 45, 87, .55); transition-duration: 0s; }
+
+/* --- блок заметки (материал журнала) ------------------------ */
+
+/* Заметка живёт по той же схеме, что книга: всё собрано у верхней
+   кромки — рубрика, заголовок, дек, дата, — а воздух остаётся внизу. */
+.note__title {
+  margin-top: 6px;
+  font-size: clamp(1.45rem, 2.65vw, 2.75rem);
+  font-size: clamp(1.45rem, 7.7cqi, 3.7rem);
+  font-weight: 590;
+  line-height: 1.12;
+  letter-spacing: -.015em;
+}
+
+/* Этаж «три статьи»: заметки стоят без книг, ряд низкий и пустоватый —
+   заголовок здесь набирается заметно крупнее общего. */
+.floor--3 .note__title {
+  font-size: clamp(1.6rem, 3vw, 3.1rem);
+  font-size: clamp(1.6rem, 9cqi, 4.2rem);
+}
+
+.note__title + .dek { margin-top: 14px; }
+
+.block--note .meta { padding-top: 22px; }
+
+/* Стопка заметок: в смешанном ряду две заметки делят одну колонку
+   и высоту книжного блока. Сама стопка прозрачна — линия между
+   заметками, как и все линии мозаики, это фон, просвечивающий
+   в 1px-зазор. */
+.block-stack {
+  flex: 1 1 var(--basis, 100%);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.block-stack > .block { flex: 1 1 auto; }
+
+/* --- блок «об издательстве» --------------------------------- */
+
+.about__quote {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 3.3rem);
+  font-size: clamp(1.6rem, 4cqi, 3.3rem);
+  font-weight: 480;
+  line-height: 1.18;
+  letter-spacing: -.01em;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+.about__sub {
+  margin-top: 22px;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.block--about .text-btn {
+  margin-top: 28px;
+  align-self: flex-start;
+}
+
+/* --- обложки (чистый CSS, типографика в cqi) ---------------- */
+
+.cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  /* проценты, не cqi: свои контейнер-юниты элемент-контейнер брать у себя не может */
+  padding: 7%;
+  border-radius: 2px;
+  overflow: hidden;
+  transition: transform .4s cubic-bezier(.2, .65, .25, 1), box-shadow .4s;
+}
+
+/* волосяная обводка для светлых обложек */
+.cover--light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(22, 19, 14, .12);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Базовое правило: обложка приподнимается от ховера по себе самой.
+   Оно же страхует старые браузеры, где :has() ниже не сработает. */
+.book__coverlink:hover .cover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 44px -30px rgba(22, 19, 14, .45);
+}
+
+/* Обложка и название ведут на одну страницу, поэтому загораются
+   вместе: наведи на любую из двух ссылок — поднимется обложка и
+   покрасится название. Обратная связка (название → обложка) —
+   только через :has(): название стоит в разметке после обложки,
+   и селектором «назад» до неё иначе не дотянуться. */
+.book:has(.book__coverlink:hover, .book__title a:hover) .cover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 44px -30px rgba(22, 19, 14, .45);
+}
+
+.book:has(.book__coverlink:hover, .book__title a:hover) .book__title a {
+  color: var(--accent);
+  transition-duration: 0s;
+}
+
+.cover__top {
+  font-size: 12px;
+  font-size: 3.4cqi;
+  font-weight: 520;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.cover__bottom {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+  font-size: 11px;
+  font-size: 3.1cqi;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.cover__bottom em {
+  font-family: var(--serif);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: .02em;
+  font-size: 13px;
+  font-size: 3.7cqi;
+}
+
+.cover__logo {
+  font-family: var(--serif);
+  font-weight: 620;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  font-size: 3.4cqi;
+}
+
+.cover__display { font-family: var(--serif); }
+
+/* слива, конструктивизм: огромное первое слово */
+.cover--hor { background: var(--accent); color: #F5EFE3; }
+
+.cover--hor .cover__display {
+  margin-top: 6cqi;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-weight: 820;
+  line-height: .98;
+  letter-spacing: -.015em;
+}
+
+.cover--hor .l1 { font-size: 64px; font-size: 26cqi; }
+.cover--hor .l2 { font-size: 32px; font-size: 12.4cqi; margin-top: 1.5cqi; letter-spacing: .01em; }
+
+/* «Внутренняя речь» — стихи, воздух, рамка */
+.cover--vnutr {
+  background: #F4F0E6;
+  color: var(--ink);
+  align-items: center;
+  text-align: center;
+  padding: 9% 7%;
+}
+
+.cover--vnutr::before {
+  content: "";
+  position: absolute;
+  inset: 5cqi;
+  border: 1px solid rgba(22, 19, 14, .35);
+  pointer-events: none;
+}
+
+.cover--vnutr .cover__display {
+  margin-block: auto;
+  font-style: italic;
+  font-weight: 460;
+  font-size: 28px;
+  font-size: 10.2cqi;
+  line-height: 1.15;
+}
+
+.cover--vnutr .cover__bottom {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8cqi;
+}
+
+/* «Ничей дневник» — чёрный, строчные */
+.cover--nichey { background: #17140F; color: #EDE5D6; }
+
+.cover--nichey .cover__display {
+  margin-block: auto;
+  font-weight: 640;
+  font-size: 34px;
+  font-size: 12.6cqi;
+  line-height: 1.03;
+}
+
+.cover--nichey .accent { color: var(--accent-warm); }
+
+/* «Севернее сна» — индиго, корешковая вертикаль */
+.cover--sever { background: #24407E; color: #EFE8D8; }
+
+/* только cqb: у vertical-rl текста inline-ось вертикальна, поэтому
+   cqi здесь мерил бы высоту, которую обложка не контейнирует,
+   и падал бы на вьюпорт; cqb для него — это ширина обложки */
+.cover--sever .cover__vert {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  bottom: 14px;
+  left: 7cqb;
+  top: 7cqb;
+  bottom: 7cqb;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--serif);
+  font-weight: 730;
+  font-size: 30px;
+  font-size: 17.5cqb;
+  line-height: 1.1;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.cover--sever .cover__top {
+  margin-left: auto;
+  max-width: 60cqi;
+  text-align: right;
+}
+
+.cover--sever .cover__bottom { justify-content: flex-end; gap: 3cqi; }
+
+/* «Тише воды» — бутылочная зелень, инициал */
+.cover--tishe { background: #2E4A3B; color: #EFE9DA; }
+
+.cover--tishe .cover__initial {
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 96px;
+  font-size: 30cqi;
+  line-height: .85;
+  margin-top: 2cqi;
+}
+
+.cover--tishe .cover__display {
+  margin-top: auto;
+  font-weight: 620;
+  font-size: 26px;
+  font-size: 9cqi;
+  line-height: 1;
+  padding-bottom: 3cqi;
+  margin-bottom: 3.5cqi;
+  border-bottom: 1px solid rgba(239, 233, 218, .4);
+}
+
+/* «Словарь утраченных мест» — песок, словарная статья */
+.cover--slovar { background: #CFBD97; color: #201B12; }
+
+.cover--slovar .cover__display {
+  margin-block: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1cqi;
+}
+
+.cover--slovar .w1,
+.cover--slovar .w3 { font-weight: 700; font-size: 30px; font-size: 11cqi; line-height: 1; }
+
+.cover--slovar .w2 {
+  font-style: italic;
+  font-weight: 430;
+  font-size: 24px;
+  font-size: 8.6cqi;
+  line-height: 1;
+}
+
+/* «Полынный воздух» — олива, курсив по центру */
+.cover--polyn {
+  background: #7C8060;
+  color: #F3EFE1;
+  text-align: center;
+  align-items: center;
+}
+
+.cover--polyn .cover__display {
+  margin-block: auto;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 30px;
+  font-size: 11.5cqi;
+  line-height: 1.08;
+}
+
+.cover--polyn .cover__bottom { width: 100%; }
+
+/* «Кабинет редкостей» — бордо, сетка-каталог */
+.cover--kabinet { background: #5C1C22; color: #EFE3D2; }
+
+.cover--kabinet .cover__display {
+  margin-block: auto;
+  font-weight: 660;
+  font-size: 30px;
+  font-size: 11.2cqi;
+  line-height: 1;
+  padding-block: 4cqi;
+  border-block: 1px solid rgba(239, 227, 210, .4);
+}
+
+/* «Стеклянный дом на Мойке» — светлое стекло, тонкий шрифт */
+.cover--stekla { background: #DCE6E8; color: #1B2A2E; }
+
+.cover--stekla .cover__display {
+  margin-block: auto;
+  font-weight: 380;
+  font-size: 26px;
+  font-size: 9.6cqi;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+}
+
+.cover--stekla .cover__display b { font-weight: 720; }
+
+/* «Отходная по табаку» — табачный, разрядка */
+.cover--tabak { background: #3A3129; color: #D8C9AE; }
+
+.cover--tabak .cover__display {
+  margin-block: auto;
+  text-transform: uppercase;
+  font-weight: 560;
+  font-size: 20px;
+  font-size: 7.4cqi;
+  line-height: 1.4;
+  letter-spacing: .12em;
+}
+
+/* «Пустое множество» — белая, знак ∅ вместо картинки */
+.cover--pustoe { background: #FBFAF7; color: var(--ink); }
+
+.cover--pustoe .cover__initial {
+  margin-block: auto;
+  align-self: center;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 90px;
+  font-size: 34cqi;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.cover--pustoe .cover__display {
+  font-weight: 620;
+  font-size: 22px;
+  font-size: 8.6cqi;
+  line-height: 1.04;
+  margin-bottom: 4cqi;
+}
+
+/* у трёх элементов подряд не должно быть трёх auto-отступов:
+   пустоту распределяет только инициал */
+.cover--pustoe .cover__bottom { margin-top: 0; }
+
+/* --- подвал ------------------------------------------------- */
+
+.site-footer {
+  background: var(--ink);
+  color: #F1EDE4;
+  padding: clamp(32px, 4.5vw, 52px) 0 20px;
+}
+
+.site-footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
+}
+
+.site-footer__mark {
+  font-family: var(--serif);
+  font-weight: 680;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: .95;
+  letter-spacing: -.02em;
+}
+
+.site-footer__tag { font-size: 14px; color: rgba(241, 237, 228, .55); }
+
+.site-footer__row {
+  margin-top: clamp(20px, 3vw, 30px);
+  padding-top: 20px;
+  border-top: 1px solid rgba(241, 237, 228, .18);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px clamp(24px, 3.5vw, 56px);
+}
+
+.site-footer__nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+
+.site-footer__nav a,
+.site-footer__mail { font-size: 14.5px; transition: color var(--fade); }
+
+.site-footer__nav a:hover,
+.site-footer__mail:hover { color: var(--accent-warm); transition-duration: 0s; }
+
+.site-footer__nav .ext { font-size: .8em; opacity: .6; }
+
+.site-footer__note {
+  margin-top: 14px;
+  max-width: 60ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(241, 237, 228, .5);
+}
+
+/* Нижняя строчка подвала: один копирайт. Ссылки «Наверх» здесь
+   больше нет — правила под неё убраны вместе с ней. */
+.site-footer__base {
+  margin-top: clamp(20px, 3vw, 30px);
+  padding-top: 16px;
+  border-top: 1px solid rgba(241, 237, 228, .18);
+  font-size: 13px;
+  color: rgba(241, 237, 228, .5);
+}
+
+/* --- движение ----------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ============================================================
+   ВНУТРЕННИЕ СТРАНИЦЫ
+   Общее: хлебные крошки, шапка страницы, разделители, полосы.
+   Главная — мозаика с видимыми границами; внутренние страницы
+   наоборот воздушные: белое поле и волосяные линии-разделители.
+   ============================================================ */
+
+.crumbs {
+  margin-top: clamp(18px, 2.5vw, 30px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--ink-soft);
+}
+
+.crumbs a { transition: color var(--fade); }
+.crumbs a:hover { color: var(--accent); transition-duration: 0s; }
+.crumbs__sep { opacity: .5; }
+
+/* Шапка внутренней страницы: рубрика — заголовок — подводка */
+.page-head {
+  padding-block: clamp(24px, 4vw, 56px) clamp(24px, 3.2vw, 44px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.page-head__title {
+  margin-top: 14px;
+  font-size: clamp(2.4rem, 8vw, 6.5rem);
+  font-weight: 640;
+  line-height: .95;
+  letter-spacing: -.025em;
+  max-width: 16ch;
+}
+
+.page-head__sub {
+  margin-top: clamp(16px, 2vw, 24px);
+  max-width: 56ch;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.page-head__count {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Секция внутренней страницы с заголовком-ярлыком слева.
+   Флекс с переносом: узко — заголовок встаёт над текстом. */
+.section {
+  padding-block: clamp(26px, 3.6vw, 50px);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(16px, 3vw, 48px);
+}
+
+.section__label {
+  flex: 0 1 180px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  padding-top: .45em;
+}
+
+.section__body { flex: 1 1 460px; min-width: 0; }
+
+.prose {
+  max-width: 66ch;
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  line-height: 1.75;
+}
+
+.prose p + p { margin-top: 1.1em; }
+.prose a { border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.prose a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+
+.prose code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .88em;
+  padding: .12em .4em;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+/* вертикальные интервалы между блоками внутри секции */
+.section__body > * + * { margin-top: clamp(20px, 2.4vw, 30px); }
+
+.lead-serif {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  font-weight: 470;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  max-width: 26ch;
+  text-wrap: balance;
+}
+
+/* ============================================================
+   СТРАНИЦА КНИГИ
+   ============================================================ */
+
+/* Обложка и текст рядом; узко — обложка сверху.
+   Перенос флекса вместо брейкпоинта. */
+.bookpage {
+  padding-block: clamp(22px, 3.2vw, 44px) clamp(26px, 3.6vw, 50px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(24px, 4vw, 72px);
+}
+
+/* Обложка не липкая: в этой полосе она и так самый высокий элемент,
+   а после переноса флекса sticky превратил бы её в ползущую шапку. */
+.bookpage__aside {
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.bookpage__main { flex: 4 1 420px; min-width: 0; }
+
+.bookpage__author {
+  margin-top: 16px;
+  font-size: clamp(.94rem, 1.32vw, 1.16rem);
+  font-weight: 600;
+}
+
+.bookpage__title {
+  margin-top: 10px;
+  font-size: clamp(2.65rem, 7vw, 5.9rem);
+  font-weight: 640;
+  line-height: .95;
+  letter-spacing: -.025em;
+}
+
+.bookpage__dek {
+  margin-top: clamp(16px, 2vw, 24px);
+  max-width: 44ch;
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 1.9vw, 1.6rem);
+  font-weight: 440;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* Крупный ряд покупки на странице книги */
+.buy--lg {
+  margin-top: clamp(22px, 3vw, 34px);
+  padding-top: clamp(20px, 2.5vw, 28px);
+  border-top: 1px solid var(--rule);
+  gap: 10px 12px;
+}
+
+.buy--lg .buy__price { font-size: clamp(1.3rem, 2.4vw, 1.9rem); font-weight: 680; margin-right: 12px; }
+.buy--lg .buy__link { padding: .75em 1.15em; font-size: 13.5px; }
+
+.buy__link--solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.buy__link--solid:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); transition-duration: 0s; }
+
+.buy__note {
+  flex-basis: 100%;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+/* Фрагмент книги — набор антиквой, как полоса из книги */
+.excerpt {
+  max-width: 62ch;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  line-height: 1.6;
+  hyphens: auto;
+}
+
+.excerpt p + p { margin-top: 0; text-indent: 1.6em; }
+.excerpt p:first-child::first-letter {
+  float: left;
+  font-size: 3.4em;
+  line-height: .82;
+  padding: .04em .12em 0 0;
+  font-weight: 620;
+}
+
+.excerpt__more { margin-top: clamp(22px, 3vw, 32px); }
+
+/* Выходные данные — две колонки, схлопываются сами */
+/* Сетка с линиями: не фон-подложка, а outline на каждой ячейке —
+   иначе «хвост» последнего ряда светился бы серым прямоугольником,
+   когда число колонок (auto-fill) не делит число ячеек нацело.
+   Соседние outline'ы накладываются в 1px-зазоре — линия одна. */
+.specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1px;
+}
+
+.specs > div {
+  padding: 14px 18px;
+  outline: 1px solid var(--rule);
+}
+
+.specs dt {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.specs dd {
+  margin-top: 5px;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   СТАТЬЯ (материал журнала)
+   ============================================================ */
+
+.article { padding-bottom: clamp(32px, 5vw, 64px); }
+
+.article__head {
+  padding-block: clamp(22px, 3.2vw, 44px) clamp(20px, 3vw, 36px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.article__title {
+  margin-top: 14px;
+  max-width: 20ch;
+  font-size: clamp(2.2rem, 6.5vw, 5.2rem);
+  font-weight: 620;
+  line-height: .98;
+  letter-spacing: -.025em;
+}
+
+.article__dek {
+  margin-top: clamp(16px, 2vw, 24px);
+  max-width: 52ch;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.article__byline {
+  margin-top: clamp(18px, 2.5vw, 28px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 20px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.article__byline b { color: var(--ink); font-weight: 600; }
+
+/* Колонка текста узкая и слева — как на газетной полосе, а не по центру */
+.article__body {
+  padding-top: clamp(22px, 3.2vw, 40px);
+  max-width: 68ch;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  line-height: 1.75;
+}
+
+.article__body > p + p { margin-top: 1.15em; }
+
+.article__body > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--serif);
+  font-size: 3.6em;
+  line-height: .8;
+  padding: .05em .1em 0 0;
+  font-weight: 660;
+  color: var(--accent);
+}
+
+.article__body h2 {
+  margin-top: clamp(32px, 4vw, 52px);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 620;
+  letter-spacing: -.015em;
+}
+
+.article__body h2 + p { margin-top: .7em; }
+
+.article__body blockquote {
+  margin-block: clamp(28px, 3.5vw, 44px);
+  padding-left: clamp(16px, 2vw, 26px);
+  border-left: 2px solid var(--accent);
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+  font-weight: 460;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+.article__body a { border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.article__body a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+
+.article__body > .article__end {
+  margin-top: clamp(30px, 4vw, 48px);
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  max-width: 68ch;
+}
+
+/* Врезка «книга по теме» внутри статьи */
+.inset {
+  margin-block: clamp(30px, 4vw, 48px);
+  padding: clamp(18px, 2.4vw, 28px);
+  border: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 28px);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.inset__cover { flex: 0 0 clamp(84px, 14vw, 130px); }
+.inset__body { flex: 1 1 240px; min-width: 0; }
+
+.inset__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.inset__title {
+  margin-top: 8px;
+  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+  font-weight: 620;
+  line-height: 1.05;
+}
+
+.inset__meta { margin-top: 8px; font-size: 13.5px; color: var(--ink-soft); }
+.inset .text-btn { margin-top: 16px; }
+
+/* ============================================================
+   КАТАЛОГ (все книги)
+   ============================================================ */
+
+/* auto-fill вместо брейкпоинтов: число колонок считает сам грид */
+.catalog {
+  padding-block: clamp(24px, 3.2vw, 44px) clamp(40px, 5.5vw, 72px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: clamp(26px, 3.2vw, 48px) clamp(20px, 2.6vw, 40px);
+}
+
+.card { display: flex; flex-direction: column; }
+.card__cover { display: block; }
+.card:hover .cover { transform: translateY(-6px); box-shadow: 0 24px 44px -30px rgba(22, 19, 14, .45); }
+
+.card__author {
+  margin-top: 16px;
+  font-size: 13.75px;
+  font-weight: 600;
+}
+
+.card__title {
+  margin-top: 7px;
+  font-size: clamp(1.27rem, 1.87vw, 1.65rem);
+  font-weight: 610;
+  line-height: 1.06;
+  letter-spacing: -.015em;
+}
+
+.card__title a { transition: color var(--fade); }
+.card__title a:hover { color: var(--accent); transition-duration: 0s; }
+
+/* Всё в карточке собрано у верхней кромки, как в блоках мозаики:
+   мета под названием, сразу за ней ряд покупки. Прижимать покупку
+   к низу (margin-top: auto) не надо — у книги без электронной версии
+   ряд ниже, и под ним зияла бы дыра. Высоту ряда карточек и так
+   задаёт самая высокая из них, лишний воздух остаётся внизу. */
+.card__meta {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* Цену и кнопки в карточке рисует общий ряд .buy — тот же, что в
+   мозаике. Своего .card__price у каталога больше нет. */
+.card .buy { padding-top: 14px; }
+
+.card__soon {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Книга, которая готовится к печати, стоит в общем ряду и никуда
+   не выносится: её выдаёт только ярлык и приглушённая карточка.
+   Приглушение постоянное, ховером не снимается: у .cover своя
+   длинная анимация подъёма, и мигание прозрачностью с ней спорит. */
+.card--soon .cover { opacity: .55; }
+.card--soon .card__author,
+.card--soon .card__title { color: var(--ink-soft); }
+
+/* ============================================================
+   АВТОРЫ — имя как заголовок списка своих книг, без фотографий
+   ============================================================ */
+
+.authors { padding-block: clamp(20px, 3vw, 40px) clamp(40px, 6vw, 80px); }
+
+/* Три колонки без брейкпоинтов: multicol сам убирает колонки,
+   когда каждой не хватает 320px. Алфавит читается сверху вниз
+   по колонке — как в оглавлении, а не поперёк строк. */
+.authors__list {
+  list-style: none;
+  columns: 3;
+  column-width: 320px;
+  column-gap: clamp(24px, 4vw, 64px);
+}
+
+/* Автор со своими книгами — неделимая группа: имя и книги
+   никогда не расходятся по разным колонкам. */
+.authors__group {
+  break-inside: avoid;
+  margin-bottom: clamp(20px, 2.4vw, 34px);
+}
+
+.authors__name {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.4vw, 2.1rem);
+  font-weight: 520;
+  line-height: 1.18;
+  letter-spacing: -.01em;
+}
+
+/* имя автора без книги в продаже — тем же кеглем, но приглушённо */
+.authors__group.is-soon .authors__name { color: var(--ink-soft); }
+
+.authors__books {
+  list-style: none;
+  margin-top: 8px;
+  padding-left: 14px;
+}
+
+/* книги отбиваются друг от друга волосяной линейкой в половину
+   ширины; над первой её нет — там уже есть отбивка от имени.
+   Линейка нарисована псевдоэлементом по верхней кромке, а не
+   бордером, — бордер тянулся бы во всю строку. */
+.authors__book + .authors__book::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 50%;
+  border-top: 1px solid var(--rule);
+}
+
+.authors__book {
+  position: relative;
+  padding-block: 7px;
+  font-family: var(--sans);
+  font-size: 18px;
+  font-size: clamp(1rem, 1.35vw, 1.1rem);
+  line-height: 1.25;
+}
+
+.authors__book a { transition: color var(--fade); }
+.authors__book a:hover { color: var(--accent); transition-duration: 0s; }
+
+/* «Готовится» — тем же приёмом, что цена в каталоге: вместо покупки */
+.authors__soon {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.authors__soon::before { content: ' · '; }
+
+/* ============================================================
+   О НАС
+   ============================================================ */
+
+.about-page { padding-bottom: clamp(40px, 5.5vw, 72px); }
+
+.manifesto {
+  padding-block: clamp(26px, 3.6vw, 50px);
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 3.6vw, 3rem);
+  font-weight: 450;
+  line-height: 1.22;
+  letter-spacing: -.015em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.manifesto em { font-style: italic; color: var(--accent); }
+
+/* Принципы: нумерованные колонки, auto-fill вместо брейкпоинтов */
+.tenets {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px;
+  counter-reset: tenet;
+}
+
+/* линии — outline'ами по ячейкам, см. комментарий у .specs */
+.tenets li {
+  padding: clamp(20px, 2.6vw, 32px);
+  outline: 1px solid var(--rule);
+  counter-increment: tenet;
+}
+
+.tenets li::before {
+  content: counter(tenet, decimal-leading-zero);
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.tenets h3 {
+  margin-top: 14px;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+  font-weight: 620;
+  letter-spacing: -.01em;
+}
+
+.tenets p { margin-top: 10px; color: var(--ink-soft); line-height: 1.65; }
+
+/* Цифры издательства */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.figures div { min-width: 0; }
+
+.figures b {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.figures span {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* Люди — имя и роль, без фотографий */
+.people {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: clamp(18px, 2.4vw, 32px);
+}
+
+.people b {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.people span {
+  display: block;
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.contact-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px clamp(20px, 3vw, 40px);
+  align-items: baseline;
+}
+
+.contact-line a {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-weight: 560;
+  letter-spacing: -.01em;
+  border-bottom: 1px solid var(--rule);
+  transition: color var(--fade), border-color var(--fade);
+}
+
+.contact-line a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+
+/* ============================================================
+   ПОЛОСА «ЧИТАЙТЕ ДАЛЬШЕ» — общая для книги и статьи
+   ============================================================ */
+
+.more {
+  padding-block: clamp(24px, 3.2vw, 42px) clamp(32px, 5vw, 64px);
+  border-top: 1px solid var(--rule);
+}
+
+.more__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.more__row {
+  margin-top: clamp(18px, 2.5vw, 28px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(20px, 2.6vw, 40px);
+}
+
+.more__item .rubric { color: var(--accent); }
+
+.more__item h3 {
+  margin-top: 10px;
+  font-size: clamp(1.15rem, 1.9vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.015em;
+}
+
+.more__item h3 a { transition: color var(--fade); }
+.more__item h3 a:hover { color: var(--accent); transition-duration: 0s; }
+.more__item .meta { margin-top: 10px; }
+
+/* ============================================================
+   ПОЯВИЛОСЬ ВМЕСТЕ С WORDPRESS
+   Лента журнала, постраничная навигация, поиск, пустые
+   состояния, обложка-картинка и оформление того, что приходит
+   из редактора (списки, цитаты, картинки). Брейкпоинтов
+   по-прежнему нет: переносы флексов и clamp().
+   ============================================================ */
+
+/* --- лента журнала ------------------------------------------ */
+
+.feed { padding-block: clamp(20px, 3vw, 40px) clamp(40px, 5.5vw, 72px); }
+
+/* тот же приём, что у .section: ярлык слева, текст справа,
+   узко — ярлык встаёт сверху */
+.feed__item {
+  padding-block: clamp(20px, 2.8vw, 36px);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px clamp(16px, 3vw, 48px);
+}
+
+.feed__item:first-child { border-top: 0; }
+
+.feed__side { flex: 0 1 180px; padding-top: .4em; }
+.feed__side .meta { margin-top: 8px; }
+.feed__body { flex: 1 1 460px; min-width: 0; }
+
+.feed__title {
+  font-size: clamp(1.4rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -.02em;
+  max-width: 24ch;
+}
+
+.feed__title a { transition: color var(--fade); }
+.feed__title a:hover { color: var(--accent); transition-duration: 0s; }
+
+.feed__dek {
+  margin-top: 12px;
+  max-width: 58ch;
+  font-size: clamp(.98rem, 1.2vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* --- постраничная навигация --------------------------------- */
+
+/* пустой .pager__side остаётся флекс-элементом нулевой ширины,
+   поэтому одинокая ссылка «Раньше» сама уезжает вправо */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: clamp(18px, 2.6vw, 28px) clamp(40px, 5.5vw, 72px);
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pager a { transition: color var(--fade); }
+.pager a:hover { color: var(--accent); transition-duration: 0s; }
+
+/* --- поиск --------------------------------------------------- */
+
+.searchform {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.searchform__label {
+  flex-basis: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.searchform__field {
+  flex: 1 1 240px;
+  min-width: 0;
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: .7em .9em;
+  transition: border-color var(--fade);
+}
+
+.searchform__field:focus { outline: none; border-color: var(--accent); transition-duration: 0s; }
+
+.searchform__go {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  padding: .7em 1.3em;
+  cursor: pointer;
+  transition: background var(--fade), border-color var(--fade);
+}
+
+.searchform__go:hover { background: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+
+/* --- пустое состояние ---------------------------------------- */
+
+.notice {
+  padding-block: clamp(26px, 4vw, 50px) clamp(40px, 5.5vw, 72px);
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-weight: 450;
+  line-height: 1.3;
+  color: var(--ink-soft);
+  max-width: 36ch;
+}
+
+.notice a { color: var(--ink); border-bottom: 1px solid var(--rule); transition: color var(--fade), border-color var(--fade); }
+.notice a:hover { color: var(--accent); border-color: var(--accent); transition-duration: 0s; }
+
+/* --- обложка-картинка ---------------------------------------- */
+
+/* когда у книги загружена настоящая обложка, вместо нарисованной
+   .cover встаёт <img> с той же пропорцией 5/7 */
+.cover--photo {
+  display: block;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* --- то, что приходит из редактора --------------------------- */
+
+.prose ul, .prose ol,
+.article__body ul, .article__body ol {
+  margin-top: 1.1em;
+  padding-left: 1.5em;
+}
+
+.prose li + li,
+.article__body li + li { margin-top: .4em; }
+
+.prose blockquote {
+  margin-block: 1.4em;
+  padding-left: clamp(16px, 2vw, 26px);
+  border-left: 2px solid var(--accent);
+  font-family: var(--serif);
+  font-size: 1.2em;
+  font-weight: 460;
+  line-height: 1.35;
+}
+
+.prose h3, .article__body h3 {
+  margin-top: clamp(24px, 3vw, 40px);
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  font-weight: 620;
+}
+
+.prose img, .article__body img, .excerpt img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.prose figure, .article__body figure { margin-block: clamp(24px, 3vw, 40px); }
+
+.prose figcaption, .article__body figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   ЗОНЫ КЛИКА В МОЗАИКЕ
+   Заметка кликается целиком: ссылка заголовка растянута на всю
+   плашку псевдоэлементом. У книги так не делаем — там свои ссылки
+   на магазины, и блок остался бы с вырезанной дырой; вместо этого
+   у обложки и названия просто чуть увеличена зона попадания.
+   Всё на псевдоэлементах, вёрстка не сдвигается, JS не нужен.
+   ============================================================ */
+
+/* .block и так контейнер (container-type даёт layout-containment,
+   то есть и содержащий блок для absolute, и стековый контекст),
+   но position задан явно — чтобы растяжка не зависела от того,
+   останется ли блок контейнером. */
+.block--note { position: relative; }
+
+.note__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Книга: зона попадания шире самой ссылки на несколько пикселей —
+   меньше зазора между обложкой и телом (14px) и меньше отбивки
+   названия от автора (6px), поэтому соседних элементов не задевает
+   и перехватывать их клики не может. */
+.book__coverlink { position: relative; }
+.book__coverlink::after { content: ""; position: absolute; inset: -8px; }
+
+/* display: block — чтобы кликался весь прямоугольник названия,
+   включая рваный правый край у многострочных, а не только буквы.
+
+   pointer-events гасим на самой ссылке и включаем только на
+   псевдоэлементе — иначе зона клика была бы больше, чем кажется:
+   у названий line-height .98 меньше естественной высоты строки,
+   глиф-боксы торчат из блока вверх и вниз на полтора десятка
+   пикселей, и этот невидимый «хвост» ловил бы клики поверх строки
+   автора. Так зона равна ровно прямоугольнику ниже, без довесков. */
+.book__title a { position: relative; display: block; pointer-events: none; }
+
+.book__title a::after {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  pointer-events: auto;
+}
+
+/* Название вплотную примыкает к ряду покупки (там, где нет дека),
+   и снизу его зоне попадания расширяться некуда. Позиционирование
+   без z-index кладёт .buy поверх этой зоны просто потому, что он
+   ниже по разметке: 4px заходят под инертный паддинг покупки,
+   а не поверх кнопок. */
+.buy { position: relative; }
+
+/* --- админ-панель WordPress ---------------------------------- */
+
+/* Единственный медиазапрос по ширине во всём проекте, и тот чужой:
+   это брейкпоинт админ-панели WordPress, которую видит только
+   залогиненный редактор. На сам сайт он не влияет. */
+body.admin-bar .site-header { top: 32px; }
+
+@media screen and (max-width: 782px) {
+  body.admin-bar .site-header { top: 46px; }
+}
